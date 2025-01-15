@@ -13,6 +13,8 @@ bibliography: textanalysis_general.bib
 nocite: '@*'
 ---
 
+<!-- To render whole site: rmarkdown::render_site() -->
+
 # Overview
 
 How can quantitative methods allow historians to make sense of the ever-increasing wealth of digitalised sources, both numeric and textual? How can historians use quantitative and computational methods to gain a better overview of their source base, ask new questions, and supplement and enhance close reading? 
@@ -42,7 +44,7 @@ Apart from actively participating in the sessions, students are expected to deli
 
 The only required reading prior to the course is an introductory text that will be distributed by email.
 
-We will be using R, a widely popular statistical software, which has the added advantage of being free. Please download it in your laptops before coming to Trondheim. In addition, we strongly encourage to complete a short sequence of tutorials to smooth the learning curve, so you are not completely new to the software before the course starts. Instructions for installing R, RStudio, and R tutorials are [here](TutorialInstructions.html).
+We will be using R, a widely popular statistical software, which has the added advantage of being free. Please download it in your laptops before coming to Trondheim. In addition, we strongly encourage to complete a short sequence of tutorials to smooth the learning curve, so you are not completely new to the software before the course starts. Instructions for installing R, RStudio, and R tutorials are [here](TutorialInstructions.pdf).
 
 <!-- # Practicalities -->
 

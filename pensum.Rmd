@@ -10,16 +10,18 @@ output:
     number_sections: true
 ---
 
-<h2>Reading List</h2>
-<br>
+### Reading List
 
-Tapia and Ferguson-Cradler, *Quanifying History* (to be distributed via email.)
 
-<h3>R Programming - Coding preparation</h3>
+There is one required reading for the course:
 
-- [R Tutorial](docs/TutorialInstructions.html).
+- Tapia and Ferguson-Cradler, *Quanifying History* (to be distributed via email.)
 
-<h4>Additional suggested readings</h4>
+Secondly, before the course begins, please follow the instructions for installing R and RStudio and completing some basic R tutorials at the link below:
+
+- [R Tutorial](TutorialInstructions.pdf).
+
+#### Additional suggested readings
 
 Other helpful books on programming in R include:
 
@@ -29,4 +31,5 @@ Other helpful books on programming in R include:
 
 - Hermansen, Silje S.L. (2019) Lær deg R: en innføring i statistikkprogrammets muligheter. [en fin norskspråklig innføring i R og i kvantitative metoder med gode samfunnsvitenskapelige eksempler]
 
-**Other things we want to mention here?**
+<center> *Other things we want to mention here?*
+</center>

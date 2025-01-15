@@ -17,9 +17,11 @@ These tutorial materials will give students in "Quantifying History" a very basi
 1.	Install R and Rstudio by following steps 1 and 2 at https://swirlstats.com/students.html. 
 
 2.	Install swirl and three tutorials. To do this, go to the same page (https://swirlstats.com/students.html), install swirl (which is step 3 on the webpage). Once you’ve installed swirl [i.e., what you did by typing: `install.packages("swirl")` in R], install the tutorials by typing
+
 ```{r, eval=FALSE}
 swirl::install_course("R Programming")
 ```
+
 and press enter. This installs the first tutorial. Now install the other two by typing (and hitting enter after each line):
 
 ```{r, eval=FALSE}
@@ -27,20 +29,22 @@ swirl::install_course("Regular Expressions")
 swirl::install_course("Exploratory Data Analysis")
 ```
 
-[The above shaded windows indicate what to enter into the R console in the lower left-hand window of RStudio]
+[The shaded windows indicate what to enter into the R console in the lower left-hand window of RStudio]
 
-Now you can open swirl by entering: 
+Now you can open swirl by entering:
+
 ```{r, eval=FALSE}
 library("swirl")
 swirl()
 ```
+
 (You only have to type the first line (`library("swirl")`) once per R session – i.e., if you exit swirl but don’t close RStudio, you can enter swirl again by simply typing: `swirl()`. If you close RStudio (or restart R within RStudio), you’ll need to repeat the first line as well (which loads the package). 
 
 3.	Work through three short tutorials introducing R and something called “regular expressions.” Open swirl (via the two lines above) and swirl will talk to you and tell you what to do in the console window in the lower left hand corner of Rstudio. It’s built for beginners so it should be straight forward to use. Of the two tutorials we installed, start with “R Programming” and do lessons 1-9, 12, and 14. I’d actually recommend all of them except Simulation (#13) if you have time. Then do the tutorial on “Regular Expressions” (it’s short and regular expressions are probably the most important thing to learn before you start working with text analysis on computers). Finally, work through "Exploratory Data Analysis" lessons 4 and 8-10 (all lessons 1-10 are recommended).
 
 You will have to install some packages as you work through the swirl tutorials. Swirl should be able to handle this for you. If you have troubles and need to install them by hand, see step 5 below. 
 
-[For those who prefer textbooks there is an excellent one online at https://r4ds.had.co.nz/index.html. Chapters 1-20 cover roughly the same material as the swirl tutorials but in much greater depth. That will take a lot longer than a couple of hours to go through but if you’re interested and want to do more, that’s where I’d start.] 
+[For those who prefer textbooks there is an excellent one online at https://r4ds.hadley.nz/. Chapters 1-20 cover roughly the same material as the swirl tutorials but in much greater depth. That will take a lot longer than a couple of hours to go through but if you’re interested and want to do more, that’s where I’d start.] 
 
 <!-- 5.	Install the following packages we will need: tidyverse, tidytext, quanteda, stm, SnowballC, syuzhet, and readtext. To do this you will simply type at the R console prompt:  -->
 
