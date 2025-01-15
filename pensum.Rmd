@@ -21,15 +21,16 @@ Secondly, before the course begins, please follow the instructions for installin
 
 - [R Tutorial](TutorialInstructions.pdf).
 
-#### Additional suggested readings
-
-Other helpful books on programming in R include:
-
-- Wickham, H. & Grolemund, G. (2022), R for Data Science. https://r4ds.had.co.nz
-
-- Imai, K., & Webb Williams, N. (2022), Quantitative Social Science: An introduction in tidyverse. 
-
-- Hermansen, Silje S.L. (2019) Lær deg R: en innføring i statistikkprogrammets muligheter. [en fin norskspråklig innføring i R og i kvantitative metoder med gode samfunnsvitenskapelige eksempler]
-
-<center> *Other things we want to mention here?*
+<center> #### *Do we want to mention suggested readings or anything else here???*
 </center>
+
+<!-- #### Additional suggested readings -->
+
+<!-- Other helpful books on programming in R include: -->
+
+<!-- - Wickham, H. & Grolemund, G. (2022), R for Data Science. https://r4ds.had.co.nz -->
+
+<!-- - Imai, K., & Webb Williams, N. (2022), Quantitative Social Science: An introduction in tidyverse.  -->
+
+<!-- - Hermansen, Silje S.L. (2019) Lær deg R: en innføring i statistikkprogrammets muligheter. [en fin norskspråklig innføring i R og i kvantitative metoder med gode samfunnsvitenskapelige eksempler] -->
+
