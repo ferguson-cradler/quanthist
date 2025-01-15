@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Session 2.1: Correlation analysis</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Overview
+  </a>
+</li>
+<li>
+  <a href="pensum.html">
+    <span class="fa fa-list-ul"></span>
+     
+    Reading List
+  </a>
+</li>
+<li>
+  <a href="schedule.html">
+    <span class="fa fa-info"></span>
+     
+    Schedule
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+    Quantitative methods
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Day 1</li>
+    <li>
+      <a href="1_1-DescStat.html">Descriptive statistics</a>
+    </li>
+    <li class="dropdown-header">Day 2</li>
+    <li>
+      <a href="2_1-CorrAnalysis.html">Correlation analysis</a>
+    </li>
+    <li class="dropdown-header">Day 3</li>
+    <li>
+      <a href="3_1-RegAnalysis.html">Regression analysis</a>
+    </li>
+    <li class="dropdown-header">Day 4</li>
+    <li>
+      <a href="4_1-Uncertainty.html">Uncertainty</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+    Computational text analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Day 1</li>
+    <li>
+      <a href="1_2-readingcleaning.html">Reading and cleaning text data</a>
+    </li>
+    <li class="dropdown-header">Day 2</li>
+    <li>
+      <a href="2_2-WordFreq.html">Word frequency and dictionary methods</a>
+    </li>
+    <li class="dropdown-header">Day 3</li>
+    <li>
+      <a href="3_2-Topicmodelling.html">Topic modelling</a>
+    </li>
+    <li class="dropdown-header">Day 4</li>
+    <li>
+      <a href="4_2-WordEmbedding.html">Word embedding</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Session 2.1: Correlation analysis</h1>
+
+</div>
+
+
+<p>To come.</p>
+<!-- Code as a [script](data/2_correlation.R). -->
+<!-- ```{r, eval = FALSE} -->
+<!-- # Install packages (if needed) -->
+<!-- install.packages("tidyverse") -->
+<!-- install.packages("xlsx") -->
+<!-- install.packages("writexl") -->
+<!-- # Start afresh -->
+<!-- rm(list=ls()) # Clear de "Global Environment" -->
+<!-- # Load the packages you need -->
+<!-- library(tidyverse)  -->
+<!-- library(readxl) -->
+<!-- library(writexl) -->
+<!-- # Working directory -->
+<!-- setwd("/Volumes/francijb/Documents/FRAN/Teaching/QM Research School/Session") # Mac -->
+<!-- setwd("W:/Documents/FRAN/Teaching/QM Research School/Session")                # Windows -->
+<!--   # RStudio menu helps finding the path:  -->
+<!--   #   Session/Set working directory/Choose directory -->
+<!--   #   Copy and paste the chosen path from the console to the script -->
+<!-- # Import data -->
+<!-- paisley_data <- read_excel("/Volumes/francijb/Documents/FRAN/Teaching/QM Research School/Datasets/paisley_data.xls") -->
+<!-- paisley_data <- read_excel("W:/Documents/FRAN/Teaching/QM Research School/Datasets/paisley_data.xls") -->
+<!--     # if the data is in the working directory, you don't need the path (just the file name) -->
+<!-- paisley_data <- read_rds("paisley_v2.rds") -->
+<!-- #################### CORRELATION (BI-VARIATE STATISTICS) ################### -->
+<!-- #### Numerical variables #### -->
+<!-- # Describing the data first: age, weight -->
+<!-- paisley_data %>%  -->
+<!--   summarize(count_age = sum(!is.na(age)),    -->
+<!--             mean_age = mean(age, na.rm = TRUE), -->
+<!--             count_weight = sum(!is.na(weight)),    -->
+<!--             mean_weight = mean(weight, na.rm = TRUE) -->
+<!--   ) -->
+<!-- # Let's express weight in kgs (instead of pounds) -->
+<!-- paisley_data <- mutate(paisley_data,  -->
+<!--                        weight_kg = 0.453592*weight) -->
+<!-- paisley_data %>%  -->
+<!--   summarize(mean_kgs = mean(weight_kg, na.rm = TRUE), -->
+<!--             min_kgs = min(weight, na.rm = TRUE), -->
+<!--             max_kgs = max(weight, na.rm = TRUE), -->
+<!--   ) -->
+<!-- ### Visually -->
+<!--   # Scatterplot: Plotting the relationship between two variables -->
+<!-- paisley_data %>%   -->
+<!--   ggplot() + -->
+<!--   geom_point(mapping = aes(x = age, y = weight_kg))  -->
+<!--   # focusing only on those younger thann 20 -->
+<!-- paisley_data %>%   -->
+<!--   filter(age <= 19) %>% -->
+<!--   ggplot() +  -->
+<!--     geom_point(mapping = aes(x = age, y = weight_kg))  -->
+<!--   ## edit how the xaxis looks like -->
+<!-- paisley_data %>%   -->
+<!--   filter(age <= 19) %>% -->
+<!--   ggplot() +  -->
+<!--     geom_point(mapping = aes(x = age, y = weight_kg)) +  -->
+<!--     scale_x_continuous(limits = c(9,19), breaks = seq(9,19, by = 1)) + -->
+<!--     scale_y_continuous(limits = c(20,80), breaks = seq(20,80, by = 10)) -->
+<!--       # sscale_x_discrete when the variable is discrete -->
+<!--   # focusing now on those aged 20 and older -->
+<!-- paisley_data %>%   -->
+<!--   filter(age >= 20) %>% -->
+<!--   ggplot() +  -->
+<!--   geom_point(mapping = aes(x = age, y = weight_kg))  -->
+<!-- #### Evolution over time (history!!) -->
+<!-- # i.e. how heights were changing over time (for males and females) -->
+<!-- height_year <- paisley_data %>%   -->
+<!--   filter(age >= 18) %>% -->
+<!--   group_by(sex, year) %>% -->
+<!--   summarise(count = sum(!is.na(height)),    -->
+<!--             mean = mean(height, na.rm = TRUE)  -->
+<!--   ) -->
+<!-- view(height_year) -->
+<!-- # Graph -->
+<!-- height_year %>%   -->
+<!--   ggplot(aes(x = year, y = mean, group=sex)) + -->
+<!--   geom_line(mapping = aes(color=sex)) -->
+<!-- # Smoothing the year-to-year variation (reduce the noise) -->
+<!-- ggplot(data = height_year, aes(x = year, y = mean, group=sex)) + -->
+<!--   geom_line(mapping = aes(color=sex)) + -->
+<!--   geom_smooth(mapping = aes(color=sex), se = FALSE) -->
+<!--     # no need to report standard errors yet (se) -->
+<!-- #### Qualitative variables #### -->
+<!-- # Sex & employment -->
+<!-- paisley_data %>%  -->
+<!--   filter(!is.na(employed)) %>% -->
+<!--   group_by(sex, employed) %>% -->
+<!--   summarize(n = n()) %>% -->
+<!--   mutate(freq = n/sum(n)) -->
+<!-- # Literacy & employment -->
+<!-- paisley_data %>%  -->
+<!--   filter(!is.na(employed)) %>% -->
+<!--   group_by(lit_adj, employed) %>% -->
+<!--   summarize(n = n()) %>% -->
+<!--   mutate(freq = n/sum(n)) -->
+<!-- ### Visually - bar graph -->
+<!-- paisley_data %>%   -->
+<!--   filter(!is.na(employed)) %>% -->
+<!--   ggplot() +  -->
+<!--   geom_bar(mapping = aes(x = lit_adj, y = stat(prop), group = 1)) + -->
+<!--   facet_wrap(~ employed, nrow = 2) + -->
+<!--   coord_flip() -->
+<!-- # Correlation coefficient:  -->
+<!--   # it measures the direction and the strenght of the association between two variables -->
+<!--   # it ranges between -1 to 1 being: -->
+<!--       #  1 - perfect positive correlation -->
+<!--       #     (strong - moderate - weak) -->
+<!--       #  0 - no correlation -->
+<!--       #     (strong - moderate - weak) -->
+<!--       # -1 - perfect negative correlation -->
+<!--   # it can be computed for numerical, ordinal and qualitative variables  -->
+<!--     # but employing different methods -->
+<!-- # Pearson's (numerical data) -->
+<!--   # age & weight (both numerical) -->
+<!-- paisley_data %>%   -->
+<!--   filter(age >= 20) %>% -->
+<!--   summarize(cor = cor(age, weight_kg, method = "pearson", use = "complete.obs"))  -->
+<!--   # -0.185 -->
+<!--     # "use" indicates how to handle missing values -->
+<!--     # other options: "everything", "all.obs", "complete.obs", "na.or.complete", or "pairwise.complete.obs" -->
+<!-- paisley_data %>%   -->
+<!--   filter(age >= 20) %>% -->
+<!--   group_by(sex) %>% -->
+<!--   summarize(cor=cor(age, weight_kg, method = "pearson", use = "complete.obs"))  -->
+<!--   # -0.106 for males / -0.338 for females -->
+<!--   # the negative link between age and weight is much stronger in women -->
+<!--   # visually: -->
+<!-- paisley_data %>%   -->
+<!--   filter(age >= 20) %>% -->
+<!--   ggplot() +  -->
+<!--   geom_point(mapping = aes(x = age, y = weight_kg)) + -->
+<!--   facet_wrap(~ sex, nrow = 2) -->
+<!-- # Spearman's (rank/ordinal data) -->
+<!--   # lit_adj & employed (both ranked variables; although "employed" has not been "ranked" yet) -->
+<!-- # Literacy & employment -->
+<!-- paisley_data %>%  -->
+<!--   filter(!is.na(employed)) %>% -->
+<!--   group_by(lit_adj, employed) %>% -->
+<!--   summarize(n = n()) %>% -->
+<!--   mutate(freq = n/sum(n)) -->
+<!-- paisley_data$lit_adj <- factor(paisley_data$lit_adj,  -->
+<!--                                 levels = c("illiterate", "read", "write"),  -->
+<!--                                 ordered = TRUE) -->
+<!-- paisley_data$employed <- factor(paisley_data$employed,  -->
+<!--                                levels = c("unemployed", "employed"),  -->
+<!--                                ordered = TRUE) -->
+<!--   # check -->
+<!-- paisley_data$lit_adj -->
+<!-- paisley_data$employed -->
+<!--   # the variables need to be numeric though -->
+<!--   # even though the distance between those numbers is not known -->
+<!--   # transform factor into a number -->
+<!-- paisley_data <- paisley_data %>%  -->
+<!--   mutate(employed_num = as.numeric(paisley_data$employed)) -->
+<!--   # check -->
+<!-- paisley_data %>%  -->
+<!--   subset(select=c(employed, employed_num)) %>% -->
+<!--   print(n = 25) # display 25 rows -->
+<!-- paisley_data <- paisley_data %>%  -->
+<!--   mutate(lit_adj_num = as.numeric(paisley_data$lit_adj)) -->
+<!-- paisley_data %>%  -->
+<!--   subset(select=c(lit_adj, lit_adj_num)) %>% -->
+<!--   print(n = 25)  -->
+<!-- ### Spearman correlation coefficient -->
+<!-- paisley_data %>%   -->
+<!--   filter(age >= 20) %>% -->
+<!--   summarize(cor=cor(lit_adj_num, employed_num, method = "spearman", use = "complete.obs"))  -->
+<!--   # Correlation coef. = 0.07 -->
+<!-- ### Cramer's V (categorical data):  -->
+<!--   # association between sex and having "marks"    -->
+<!--   # first we need to identify those with no marks -->
+<!-- paisley_data %>%  -->
+<!--   group_by(marks) %>% -->
+<!--   summarize(n = n()) %>%  -->
+<!--   print(n = Inf) # display all rows -->
+<!-- paisley_data <- paisley_data %>%  -->
+<!--   mutate(marks2 = 1)      # new variable called "marks2": all values set to 1 -->
+<!-- view(paisley_data) -->
+<!-- paisley_data$marks2[str_detect(paisley_data$marks, "no mark")] <- 0 -->
+<!--   # note that this identifies those "no mark" and "no marks" -->
+<!-- paisley_data$marks2[str_detect(paisley_data$marks, "nomark")] <- 0 -->
+<!-- paisley_data$marks2[str_detect(paisley_data$marks, "none")] <- 0 -->
+<!-- paisley_data$marks2[is.na(paisley_data$marks)] <- NA -->
+<!--   # this last one is very important -->
+<!--   # otherwise, missing values (NA) are assumed to be 0 (equalling those with marks) -->
+<!--   # check: -->
+<!-- paisley_data %>%  -->
+<!--   subset(select=c(marks, marks2)) %>% -->
+<!--   print(n = 200)  -->
+<!-- # Is there a link between sex and having marks? -->
+<!--   # have a sense of the data first -->
+<!-- paisley_data %>%  -->
+<!--   filter(!is.na(marks2)) %>% -->
+<!--   group_by(sex, marks2) %>% -->
+<!--   summarize(n = n()) %>% -->
+<!--   mutate(freq = n/sum(n)) -->
+<!-- ### Cramer's V -->
+<!-- install.packages("lsr") -->
+<!-- library(lsr) -->
+<!-- cramersV(paisley_data$sex, paisley_data$marks2) -->
+<!--   # 0.11 -->
+<!-- # Another example (how to do it by sex????????????????????????????????????????): -->
+<!-- cramersV(paisley_data$sex, paisley_data$employed)  -->
+<!--   # 0.19 -->
+<!-- ### Visualising qualitative info (dummy variables) -->
+<!-- # Creating dummy variables (0/1) -->
+<!--   # Any qualitative dimension can be expressed as 0/1 -->
+<!-- # i.e. being male: -->
+<!-- table(paisley_data$sex)  -->
+<!-- paisley_data$male <- ifelse(paisley_data$sex == "male", 1, 0) -->
+<!--   # it creates a new variable ("male") and -->
+<!--   # assigns 1 to those that meet the condition (sex=="male") and 0 otherwise -->
+<!--   # importantly, ifelse don't affect the missing values (NA) -->
+<!--   # (not important in this case, because all the prisoners have info on sex) -->
+<!--     # check the results -->
+<!-- paisley_data %>%  -->
+<!--   subset(select=c(forename, sex, male)) %>% -->
+<!--   print(n = 50)  -->
+<!-- paisley_data %>%  -->
+<!--   group_by(male) %>% -->
+<!--   summarize(n = n()) %>% -->
+<!--   mutate(freq = n/sum(n)) -->
+<!-- # i.e. being able to read and write -->
+<!-- paisley_data %>%  -->
+<!--   group_by(lit_adj) %>% -->
+<!--   summarize(n = n()) %>% -->
+<!--   mutate(freq = n/sum(n)) -->
+<!-- paisley_data$write <- ifelse(paisley_data$lit_adj == "write", 1, 0) -->
+<!--   # creates a new variable ("write") with values 1/0 -->
+<!--   # check -->
+<!-- paisley_data %>%  -->
+<!--   group_by(write) %>% -->
+<!--   summarize(n = n()) %>% -->
+<!--   mutate(freq = n/sum(n)) -->
+<!-- ### Dummy variables can easily be expressed as fractions or probabilities -->
+<!-- # The mean (average) is actually the fraction of the sample fulfilling that condition -->
+<!-- # i.e. probability of being literate by age groups -->
+<!-- lit_by_age <- paisley_data %>%   # note that we are now creating an object (not just reporting) -->
+<!--   group_by(age) %>% -->
+<!--   summarize(count = sum(!is.na(write)),  -->
+<!--             fr_write = mean(write, na.rm = TRUE) -->
+<!--   ) -->
+<!-- view(lit_by_age) -->
+<!--   # Visually -->
+<!-- lit_by_age %>% -->
+<!--   filter(!is.na(age)) %>% -->
+<!--   ggplot(mapping = aes(x = age, y = fr_write)) + -->
+<!--   geom_col() -->
+<!--   # Perhaps better to group age in larger bins -->
+<!-- summary(paisley_data$age, na.rm = T) -->
+<!-- paisley_data <- paisley_data %>%  -->
+<!--   mutate(age_class = cut(age, breaks = c(9, 20, 30, 40, 50, 60, Inf))) -->
+<!-- lit_by_age2 <- paisley_data %>%    -->
+<!--   group_by(age_class) %>% -->
+<!--   summarize(count = sum(!is.na(write)),  -->
+<!--             fr_write = mean(write, na.rm = TRUE) -->
+<!--   ) -->
+<!-- view(lit_by_age2) -->
+<!-- # Visually -->
+<!-- lit_by_age2 %>% -->
+<!--   filter(!is.na(age_class)) %>% -->
+<!--   ggplot() + -->
+<!--   geom_col(mapping = aes(x = age_class, y = fr_write)) -->
+<!-- # Evolution over time (history!) -->
+<!-- view(paisley_data) -->
+<!-- lit_by_year <- paisley_data %>%    -->
+<!--   group_by(year) %>% -->
+<!--   summarize(count = sum(!is.na(write)),  -->
+<!--             fr_write = mean(write, na.rm = TRUE) -->
+<!--   ) -->
+<!-- view(lit_by_year) -->
+<!-- lit_by_year %>% -->
+<!--   filter(!is.na(year)) %>% -->
+<!--   ggplot() + -->
+<!--   geom_col(mapping = aes(x = year, y = fr_write)) -->
+<!-- ### Correlation is not causation -->
+<!--   # Omitted variables (including compositional effects: age, sex) -->
+<!--   # The direction of the causality is sometimes unclear: employed <-->
+<p>literacy –&gt;</p>
+<!-- ### Other issues -->
+<!--   # Number of observations -->
+<!--   # Outliers -->
+<!--   # Categories employed -->
+<!--   # Garbage in, garbage out (the results are as good as the data itself) -->
+<!-- ### There are ways of automatically creating dummies when many categories -->
+<!-- install.packages("fastDummies") -->
+<!-- library("fastDummies") -->
+<!-- subset(paisley_data, select=c(forename, sex, countryb)) -->
+<!-- paisley_data <- dummy_cols(paisley_data, select_columns = 'countryb') -->
+<!--   # create new variables and assign 0/1 using all categories -->
+<!--   # missing values (NA) are respected -->
+<!--   # check the results -->
+<!-- subset(paisley_data,  -->
+<!--        select=c(forename, sex, countryb, countryb_england, countryb_ireland, countryb_scotland, countryb_overseas) -->
+<!--        ) -->
+<!--   # check what happens with the missing values (NA: not available) -->
+<!-- subset(paisley_data, is.na(paisley_data$countryb),  -->
+<!--        select=c(forename, sex, countryb, countryb_england, countryb_ireland, countryb_scotland, countryb_overseas) -->
+<!--        ) -->
+<!-- ``` -->
+
+<br><br><p>2022.
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

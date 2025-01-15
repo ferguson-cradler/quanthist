@@ -1,0 +1,32 @@
+---
+title: "Quantifying History"
+subtitle: "Norwegian Research School in History, NTNU, Trondheim"
+date: "February 3-7, 2025"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+---
+
+<h2>Reading List</h2>
+<br>
+
+Tapia and Ferguson-Cradler, *Quanifying History* (to be distributed via email.)
+
+<h3>R Programming - Coding preparation</h3>
+
+- [R Tutorial](docs/TutorialInstructions.html).
+
+<h4>Additional suggested readings</h4>
+
+Other helpful books on programming in R include:
+
+- Wickham, H. & Grolemund, G. (2022), R for Data Science. https://r4ds.had.co.nz
+
+- Imai, K., & Webb Williams, N. (2022), Quantitative Social Science: An introduction in tidyverse. 
+
+- Hermansen, Silje S.L. (2019) Lær deg R: en innføring i statistikkprogrammets muligheter. [en fin norskspråklig innføring i R og i kvantitative metoder med gode samfunnsvitenskapelige eksempler]
+
+**Other things we want to mention here?**

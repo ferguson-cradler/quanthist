@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Session 3.2: Topic modeling</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Overview
+  </a>
+</li>
+<li>
+  <a href="pensum.html">
+    <span class="fa fa-list-ul"></span>
+     
+    Reading List
+  </a>
+</li>
+<li>
+  <a href="schedule.html">
+    <span class="fa fa-info"></span>
+     
+    Schedule
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+    Quantitative methods
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Day 1</li>
+    <li>
+      <a href="1_1-DescStat.html">Descriptive statistics</a>
+    </li>
+    <li class="dropdown-header">Day 2</li>
+    <li>
+      <a href="2_1-CorrAnalysis.html">Correlation analysis</a>
+    </li>
+    <li class="dropdown-header">Day 3</li>
+    <li>
+      <a href="3_1-RegAnalysis.html">Regression analysis</a>
+    </li>
+    <li class="dropdown-header">Day 4</li>
+    <li>
+      <a href="4_1-Uncertainty.html">Uncertainty</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+    Computational text analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Day 1</li>
+    <li>
+      <a href="1_2-readingcleaning.html">Reading and cleaning text data</a>
+    </li>
+    <li class="dropdown-header">Day 2</li>
+    <li>
+      <a href="2_2-WordFreq.html">Word frequency and dictionary methods</a>
+    </li>
+    <li class="dropdown-header">Day 3</li>
+    <li>
+      <a href="3_2-Topicmodelling.html">Topic modelling</a>
+    </li>
+    <li class="dropdown-header">Day 4</li>
+    <li>
+      <a href="4_2-WordEmbedding.html">Word embedding</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Session 3.2: Topic modeling</h1>
+
+</div>
+
+
+<p>Under construction</p>
+<div
+id="r-messagefalse-warningfalse-resultshide-librarytidyverse-librarytidytext-librarystm-librarytopicmodels-libraryquanteda-libraryquanteda.textstats-libraryquanteda.textplots"
+class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+<code>{r, message=FALSE, warning=FALSE, results='hide'} # library(tidyverse) # library(tidytext) # library(stm) # library(topicmodels) # library(quanteda) # library(quanteda.textstats) # library(quanteda.textplots) #</code></h1>
+</div>
+<div id="section" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> </h1>
+</div>
+<div id="todays-script-is-here." class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Today’s script is <a
+href="data/script_wednesday_text.R">here</a>.</h1>
+</div>
+<div id="section-1" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> </h1>
+</div>
+<div id="reading-into-topic-modeling-packages-topicmodels"
+class="section level1" number="5">
+<h1><span class="header-section-number">5</span> # Reading into topic
+modeling packages (topicmodels)</h1>
+</div>
+<div id="section-2" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> </h1>
+</div>
+<div
+id="there-are-a-number-of-topic-model-instantiations-in-r.-we-will-go-through-one-of-the-more-popular-ones-topicmodels-which-plays-very-nicely-with-the-tidyverse."
+class="section level1" number="7">
+<h1><span class="header-section-number">7</span> There are a number of
+topic model instantiations in R. We will go through one of the more
+popular ones – <code>topicmodels</code> which plays very nicely with the
+tidyverse.<a href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a></h1>
+</div>
+<div id="section-3" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> </h1>
+</div>
+<div
+id="topicmodelss-main-topic-model-function-is-lda-which-stands-for-latent-dirichlet-allocation-a-type-of-topic-model-and-often-used-as-shorthand-for-topic-models-in-general.-it-takes-a-dtm-as-input-and-gives-us-an-object-of-class-lda-as-output-which-we-can-then-analyze-and-visualize-in-the-tidyverse.-there-are-many-points-where-we-can-customize-adjust-parameters-and-so-on-but-the-one-we-must-specify-is-the-number-of-topics.-this-is-something-that-often-takes-some-fiddling-with.-unless-you-have-reason-to-think-that-the-number-of-topics-is-extremely-limited-in-a-certain-corpus-one-generally-uses-between-20-50-topics.-the-other-parameter-it-makes-sense-to-think-of-prior-to-or-under-analysis-is-document-size.-as-weve-seen-a-dtm-will-break-up-a-text-without-concern-for-order-within-individual-documents.-so-large-documents-will-be-extremely-generalized-in-a-dtm.-it-could-well-be-reasonable-to-break-up-books-for-example-by-chapter.-we-could-go-more-finer-grained-as-well-chunking-by-paragraph-might-make-sense-sometimes-too.-much-will-depend-on-the-corpus-and-object-of-analysis.-experiment-and-see-what-leads-to-the-most-understandable-and-coherent-topics."
+class="section level1" number="9">
+<h1><span class="header-section-number">9</span>
+<code>topicmodels</code>’s main topic model function is
+<code>LDA()</code>, which stands for Latent Dirichlet Allocation, a type
+of topic model and often used as shorthand for topic models in general.
+It takes a DTM as input and gives us an object of class <code>LDA</code>
+as output, which we can then analyze and visualize in the tidyverse.
+There are many points where we can customize, adjust parameters and so
+on but the one we must specify is the number of topics. This is
+something that often takes some fiddling with. Unless you have reason to
+think that the number of topics is extremely limited in a certain corpus
+one generally uses between ~20-50 topics. The other parameter it makes
+sense to think of prior to, or under, analysis is document size. As
+we’ve seen, a DTM will break up a text without concern for order within
+individual documents. So large documents will be extremely generalized
+in a DTM. It could well be reasonable to break up books, for example, by
+chapter. We could go more finer grained as well – chunking by paragraph
+might make sense sometimes, too. Much will depend on the corpus and
+object of analysis. Experiment and see what leads to the most
+understandable and coherent topics.</h1>
+</div>
+<div id="section-4" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> </h1>
+</div>
+<div
+id="r-message-false-optionsstringsasfactors-false-librarytidyverse-librarytidytext-librarytopicmodels-read-in-the-dataframe-into-r-as-normal-nobel_tidy---read_rdsdatanobel_stemmed.rds-selectyear-laureate-word_stem-renameyear-year-laureate-laureate-words-word_stem-transform-dataframe-to-dtm-nobel_dtm---nobel_tidy-group_byyear-countwords-sort-true-cast_dtmyear-words-n"
+class="section level1" number="11">
+<h1><span class="header-section-number">11</span>
+<code>{r, message = FALSE} # options(stringsAsFactors = FALSE) # library(tidyverse) # library(tidytext) # library(topicmodels) # # read in the dataframe into R as normal # nobel_tidy &lt;- read_rds("data/nobel_stemmed.Rds") %&gt;% #   select(Year, Laureate, word_stem) %&gt;% #   rename(Year = Year, Laureate = Laureate, words = word_stem) # # transform dataframe to DTM # nobel_dtm &lt;- nobel_tidy %&gt;% #   group_by(Year) %&gt;% #   count(words, sort = TRUE) %&gt;% #   cast_dtm(Year, words, n) #</code></h1>
+</div>
+<div id="section-5" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> </h1>
+</div>
+<div
+id="there-are-many-points-where-we-can-customize-adjust-parameters-and-so-on-but-the-one-we-must-specify-is-the-number-of-topics.-this-is-something-that-often-takes-some-fiddling-with.-unless-you-have-reason-to-think-that-the-number-of-topics-is-extremely-limited-in-a-certain-corpus-one-generally-uses-between-15-50-topics-very-roughly."
+class="section level1" number="13">
+<h1><span class="header-section-number">13</span> There are many points
+where we can customize, adjust parameters and so on but the one we must
+specify is the number of topics. This is something that often takes some
+fiddling with. Unless you have reason to think that the number of topics
+is extremely limited in a certain corpus one generally uses between
+~15-50 topics (very roughly).</h1>
+</div>
+<div id="section-6" class="section level1" number="14">
+<h1><span class="header-section-number">14</span> </h1>
+</div>
+<div
+id="another-parameter-it-makes-sense-to-think-of-prior-to-or-under-analysis-is-document-size.-as-weve-seen-a-dtm-will-break-up-a-text-without-concern-for-order-within-individual-documents.-so-large-documents-will-be-extremely-generalized-in-a-dtm.-it-could-well-be-reasonable-to-break-up-books-for-example-by-chapter.-we-could-go-more-finer-grained-as-well-chunking-by-paragraph-might-make-sense-sometimes-too.-much-will-depend-on-the-corpus-and-object-of-analysis.-experiment-and-see-what-leads-to-the-most-understandable-and-coherent-topics."
+class="section level1" number="15">
+<h1><span class="header-section-number">15</span> Another parameter it
+makes sense to think of prior to, or under, analysis is document size.
+As we’ve seen, a DTM will break up a text without concern for order
+within individual documents. So large documents will be extremely
+generalized in a DTM. It could well be reasonable to break up books, for
+example, by chapter. We could go more finer grained as well – chunking
+by paragraph might make sense sometimes, too. Much will depend on the
+corpus and object of analysis. Experiment and see what leads to the most
+understandable and coherent topics.</h1>
+</div>
+<div id="section-7" class="section level1" number="16">
+<h1><span class="header-section-number">16</span> </h1>
+</div>
+<div
+id="we-are-also-using-the-corpus-that-we-have-already-cleaned-and-removed-stopwords-from.-we-might-also-question-if-certain-words-are-turning-up-so-much-in-every-document-that-they-wont-add-anything-to-the-topics-that-the-topic-model-finds-removing-frequently-appearing-words-will-also-reduce-the-time-it-takes-for-the-algorithm-to-fit-the-topic-model.-we-might-consider-if-in-the-nobel-corpus-the-word-nobel-will-add-anything-to-any-of-the-topics-especially-if-we-are-treating-the-documents-as-the-speeches-as-a-whole.-it-might-or-might-or-not-topic-models-take-some-experimentation."
+class="section level1" number="17">
+<h1><span class="header-section-number">17</span> We are also using the
+corpus that we have already cleaned and removed stopwords from. We might
+also question if certain words are turning up so much in every document
+that they won’t add anything to the topics that the topic model finds
+(removing frequently appearing words will also reduce the time it takes
+for the algorithm to fit the topic model). We might consider if, in the
+Nobel corpus, the word “nobel” will add anything to any of the topics,
+especially if we are treating the documents as the speeches as a whole.
+It might or might or not, topic models take some experimentation.</h1>
+</div>
+<div id="section-8" class="section level1" number="18">
+<h1><span class="header-section-number">18</span> </h1>
+</div>
+<div
+id="lastly-the-alpha-parameter-controls-how-much-documents-come-to-be-dominated-by-one-or-few-topics-or-if-the-topics-are-more-evenly-distributed-over-documents.-this-parameter-is-automatically-optimized-by-the-algorithm-if-the-user-does-not-set-it-but-often-algorithmic-optimization-does-not-lead-to-the-best-model-fit-from-the-standpoint-of-a-human.-this-model-tends-toward-a-low-alpha-and-very-uneven-topic-spread-so-well-set-it-ourselves.-again-this-is-something-the-analyst-must-experiment-with."
+class="section level1" number="19">
+<h1><span class="header-section-number">19</span> Lastly, the alpha
+parameter controls how much documents come to be dominated by one or few
+topics or if the topics are more evenly distributed over documents. This
+parameter is automatically optimized by the algorithm if the user does
+not set it, but often algorithmic optimization does not lead to the best
+model fit from the standpoint of a human. This model tends toward a low
+alpha and very uneven topic spread so we’ll set it ourselves. Again,
+this is something the analyst must experiment with.</h1>
+</div>
+<div id="section-9" class="section level1" number="20">
+<h1><span class="header-section-number">20</span> </h1>
+</div>
+<div id="r-k-15-alpha-2-nobel_tm---ldanobel_dtm-k-k-alpha-alpha"
+class="section level1" number="21">
+<h1><span class="header-section-number">21</span>
+<code>{r} # k = 15 # alpha = 2 # nobel_tm &lt;- LDA(nobel_dtm, k = k, alpha = alpha) #</code></h1>
+</div>
+<div id="section-10" class="section level1" number="22">
+<h1><span class="header-section-number">22</span> </h1>
+</div>
+<div
+id="fitting-the-model-involves-us-telling-r-finding-a-distributions-that-best-match-the-corpus-we-have-given-the-general-structural-assumptions-the-topic-model-takes.-there-are-different-methods-for-doing-this-and-they-might-take-a-while.-we-are-interested-in-two-distributions-theta-theta-the-proportion-of-each-document-devoted-to-which-topics-and-beta-beta-the-proportion-of-each-topic-made-up-by-which-words-see-the-presentation-pdf-for-details."
+class="section level1" number="23">
+<h1><span class="header-section-number">23</span> Fitting the model
+involves us telling R finding a distributions that best match the corpus
+we have given the general structural assumptions the topic model takes.
+There are different methods for doing this and they might take a while.
+We are interested in two distributions: theta (<span
+class="math inline">\(\theta\)</span>) – the proportion of each document
+devoted to which topics, and beta (<span
+class="math inline">\(\beta\)</span>) – the proportion of each topic
+made up by which words (see the presentation <a
+href="Presentations/Topic_models.pdf">pdf</a> for details).</h1>
+</div>
+<div id="section-11" class="section level1" number="24">
+<h1><span class="header-section-number">24</span> </h1>
+</div>
+<div
+id="lets-first-take-a-look-at-the-output-of-the-topic-model.-we-call-posterior-to-get-these-so-called-posterior-distributions."
+class="section level1" number="25">
+<h1><span class="header-section-number">25</span> Let’s first take a
+look at the output of the topic model. We call <code>posterior()</code>
+to get these so-called posterior distributions.</h1>
+</div>
+<div id="section-12" class="section level1" number="26">
+<h1><span class="header-section-number">26</span> </h1>
+</div>
+<div id="r-strposteriornobel_tm" class="section level1" number="27">
+<h1><span class="header-section-number">27</span>
+<code>{r} # str(posterior(nobel_tm)) #</code></h1>
+</div>
+<div id="section-13" class="section level1" number="28">
+<h1><span class="header-section-number">28</span> </h1>
+</div>
+<div
+id="if-you-call-str-on-this-object-you-see-topicmodels-has-returned-two-distributions-one-called-term-that-is-made-up-of-a-matrix-of-the-twenty-topics-on-one-axis-and-the-8063-unique-words-in-the-corpus-on-the-other-with-each-entry-indicating-likelihood-of-that-word-turning-up-given-the-topic-we-might-think-of-this-as-the-proportion-of-the-topic-taken-up-by-each-word-in-the-corpus.-it-is-a-probability-distribution-so-each-words-probability-within-a-given-topic-has-to-sum-to-1.-this-is-the-beta-matrix.-the-topics-distribution-we-see-is-a-matrix-size-92-x-20-the-likelihood-of-each-document-speech-containing-each-of-20-topics-also-summing-to-1-within-each-document-and-that-we-might-think-of-as-proportions.-so-what-do-we-do-with-this"
+class="section level1" number="29">
+<h1><span class="header-section-number">29</span> If you call
+<code>str()</code> on this object you see <code>topicmodels</code> has
+returned two distributions, one called <code>term</code> that is made up
+of a matrix of the twenty topics on one axis and the 8063 unique words
+in the corpus on the other, with each entry indicating likelihood of
+that word turning up given the topic (we might think of this as the
+proportion of the topic taken up by each word in the corpus). It is a
+probability distribution so each words probability within a given topic
+has to sum to 1. This is the <code>beta</code> matrix. The topics
+distribution we see is a matrix size 92 x 20, the likelihood of each
+document (speech) containing each of 20 topics – also summing to 1
+within each document and that we might think of as proportions. So what
+do we do with this?</h1>
+</div>
+<div id="section-14" class="section level1" number="30">
+<h1><span class="header-section-number">30</span> </h1>
+</div>
+<div
+id="the-most-useful-thing-to-look-at-straight-away-are-the-highest-words-in-each-topic-do-the-topics-make-sense-to-a-human"
+class="section level1" number="31">
+<h1><span class="header-section-number">31</span> The most useful thing
+to look at straight away are the highest words in each topic – do the
+topics make sense to a human?</h1>
+</div>
+<div id="section-15" class="section level1" number="32">
+<h1><span class="header-section-number">32</span> </h1>
+</div>
+<div id="r-termsnobel_tm-15" class="section level1" number="33">
+<h1><span class="header-section-number">33</span>
+<code>{r} # terms(nobel_tm, 15) #</code></h1>
+</div>
+<div id="section-16" class="section level1" number="34">
+<h1><span class="header-section-number">34</span> </h1>
+</div>
+<div
+id="we-can-of-course-work-directly-with-these-data-structures-but-per-our-approach-in-this-workshop-were-going-to-tidy-our-results-and-take-the-data-interpretation-and-visualization-back-to-the-tidyverse-where-we-have-all-its-tools-at-our-disposal."
+class="section level1" number="35">
+<h1><span class="header-section-number">35</span> We can, of course,
+work directly with these data structures but per our approach in this
+workshop, we’re going to tidy our results and take the data
+interpretation and visualization back to the tidyverse where we have all
+its tools at our disposal.</h1>
+</div>
+<div id="section-17" class="section level1" number="36">
+<h1><span class="header-section-number">36</span> </h1>
+</div>
+<div id="making-sense-of-and-visualizing-output" class="section level1"
+number="37">
+<h1><span class="header-section-number">37</span> # Making sense of and
+visualizing output</h1>
+</div>
+<div id="section-18" class="section level1" number="38">
+<h1><span class="header-section-number">38</span> </h1>
+</div>
+<div
+id="lets-first-plot-the-top-words-in-each-topic.-this-is-generally-where-you-want-to-start-in-evaluating-a-topic-model-are-the-topics-interpretable.-we-use-tidy-to-transform-the-beta-matrix-into-tidy-format-one-word-per-row-and-then-it-is-a-simple-task-for-us-to-plot-it-in-ggplot."
+class="section level1" number="39">
+<h1><span class="header-section-number">39</span> Let’s first plot the
+top words in each topic. This is generally where you want to start in
+evaluating a topic model – are the topics interpretable. We use
+<code>tidy()</code> to transform the beta matrix into tidy format (one
+word per row) and then it is a simple task for us to plot it in
+ggplot.</h1>
+</div>
+<div id="section-19" class="section level1" number="40">
+<h1><span class="header-section-number">40</span> </h1>
+</div>
+<div
+id="r-terms---tidynobel_tm-matrix-beta-words_in_topics---terms-group_bytopic-slice_maxbeta-n-10-ungroup-arrangetopic--beta-words_in_topics-mutateterm-reorder_withinterm-beta-topic-ggplotaesbeta-term-fill-factortopic-geom_colshow.legend-false-facet_wrap-topic-scales-free-scale_y_reordered"
+class="section level1" number="41">
+<h1><span class="header-section-number">41</span>
+<code>{r} # terms &lt;- tidy(nobel_tm, matrix = "beta") # words_in_topics &lt;- terms %&gt;% #   group_by(topic) %&gt;% #   slice_max(beta, n = 10) %&gt;%  #   ungroup() %&gt;% #   arrange(topic, -beta) # words_in_topics %&gt;% #   mutate(term = reorder_within(term, beta, topic)) %&gt;% #   ggplot(aes(beta, term, fill = factor(topic))) + #   geom_col(show.legend = FALSE) + #   facet_wrap(~ topic, scales = "free") + #   scale_y_reordered() #</code></h1>
+</div>
+<div id="section-20" class="section level1" number="42">
+<h1><span class="header-section-number">42</span> </h1>
+</div>
+<div
+id="lets-turn-to-the-matrix-of-probabilities-of-topics-over-documents.-to-keep-us-on-our-toes-topicmodels-calls-this-not-theta-but-gamma-gamma."
+class="section level1" number="43">
+<h1><span class="header-section-number">43</span> Let’s turn to the
+matrix of probabilities of topics over documents. To keep us on our toes
+<code>topicmodels</code> calls this not theta but <code>gamma</code>
+(<span class="math inline">\(\gamma\)</span>).</h1>
+</div>
+<div id="section-21" class="section level1" number="44">
+<h1><span class="header-section-number">44</span> </h1>
+</div>
+<div
+id="r-topics_in_documents---tidynobel_tm-matrix-gamma-topics_in_documents"
+class="section level1" number="45">
+<h1><span class="header-section-number">45</span>
+<code>{r} # topics_in_documents &lt;- tidy(nobel_tm, matrix = "gamma") # topics_in_documents #</code></h1>
+</div>
+<div id="section-22" class="section level1" number="46">
+<h1><span class="header-section-number">46</span> </h1>
+</div>
+<div
+id="this-tells-us-the-estimated-proportion-of-words-in-each-given-document-devoted-generated-by-to-a-specific-topic.-a-problem-here-is-that-numbering-topics-makes-it-hard-to-figure-out-what-this-means.-so-we-can-first-rename-the-topics.-we-can-do-this-by-hand-recommended-or-automatically-based-on-the-highest-ranking-words-in-the-previous-beta-matrix."
+class="section level1" number="47">
+<h1><span class="header-section-number">47</span> This tells us the
+estimated proportion of words in each given document devoted (generated
+by) to a specific topic. A problem here is that numbering topics makes
+it hard to figure out what this means. So we can first rename the
+topics. We can do this by hand (recommended) or automatically based on
+the highest ranking words in the previous beta matrix.</h1>
+</div>
+<div id="section-23" class="section level1" number="48">
+<h1><span class="header-section-number">48</span> </h1>
+</div>
+<div
+id="r-labelling-by-hand-we-would-extend-this-to-120-and-given-20-topics-if-we-wanted-to-name-them-all-hand_topics---tibbleold_topic-13-new_topic-cinternational-peace-nuclear-peac-and-war-topics_in_documents-left_joinhand_topics_topics-byctopic-old_topic-alternative-two-easier-for-demonstration-purposes-on-a-sub-optimally-fit-topic-model-auto_topics---applytermsnobel_tm-3-2-paste-collapse---pastes-together-the-top-three-terms-for-each-topic-in-the-nobel-topic-model-auto_topics---tibbleold_topic-1k-new_topic-auto_topics-make-as-tibble-where-numeric-topics-are-matched-with-the-auto-generated-ones-topics---topics_in_documents-left_joinauto_topics-byctopic-old_topic"
+class="section level1" number="49">
+<h1><span class="header-section-number">49</span>
+<code>{r} # # labelling by hand, we would extend this to 1:20, and given 20 topics if we wanted to name them all # #hand_topics &lt;- tibble(old_topic = 1:3, new_topic = c("International peace", "Nuclear", "Peac and war")) # #topics_in_documents %&gt;% # #  left_join(hand_topics_topics, by=c("topic" = "old_topic")) #  # # alternative two, easier for demonstration purposes on a sub-optimally-fit topic model # (auto_topics &lt;- apply(terms(nobel_tm, 3), 2, paste, collapse = "-"))  # pastes together the top three terms for each topic in the nobel topic model # (auto_topics &lt;- tibble(old_topic = 1:k, new_topic = auto_topics)) # make as tibble where numeric topics are matched with the auto generated ones # (topics &lt;- topics_in_documents %&gt;% #   left_join(auto_topics, by=c("topic" = "old_topic"))) #</code></h1>
+</div>
+<div id="section-24" class="section level1" number="50">
+<h1><span class="header-section-number">50</span> </h1>
+</div>
+<div
+id="now-we-have-our-data-in-a-familiar-format-we-can-subset-and-visualize.-perhaps-wed-like-to-compare-the-topic-distribution-in-several-topics."
+class="section level1" number="51">
+<h1><span class="header-section-number">51</span> Now we have our data
+in a familiar format we can subset and visualize. Perhaps we’d like to
+compare the topic distribution in several topics.</h1>
+</div>
+<div id="section-25" class="section level1" number="52">
+<h1><span class="header-section-number">52</span> </h1>
+</div>
+<div
+id="r-topics-filterdocument-in-c1977-1985-1996-the-documents-we-want-to-compare-ggplotaesnew_topic-gamma-fill-document-geom_col-coord_flip-facet_wrap-document-ncol-3"
+class="section level1" number="53">
+<h1><span class="header-section-number">53</span>
+<code>{r} # topics %&gt;% #   filter(document %in% c(1977, 1985, 1996)) %&gt;%  # the documents we want to compare #   ggplot(aes(new_topic, gamma, fill = document)) + #   geom_col() + #   coord_flip() + #   facet_wrap(~ document, ncol = 3) #</code></h1>
+</div>
+<div id="section-26" class="section level1" number="54">
+<h1><span class="header-section-number">54</span> </h1>
+</div>
+<div id="we-can-visualize-the-distribution-of-all-topics-over-time."
+class="section level1" number="55">
+<h1><span class="header-section-number">55</span> We can visualize the
+distribution of all topics over time.</h1>
+</div>
+<div id="section-27" class="section level1" number="56">
+<h1><span class="header-section-number">56</span> </h1>
+</div>
+<div
+id="r-topics-ggplotaesdocument-gamma-geom_colaesgroup-new_topic-fill-new_topic-scale_x_discretebreaks-seq1905-2019-10"
+class="section level1" number="57">
+<h1><span class="header-section-number">57</span>
+<code>{r} # topics %&gt;% #   ggplot(aes(document, gamma)) + #     geom_col(aes(group = new_topic, fill = new_topic)) + #     scale_x_discrete(breaks = seq(1905, 2019, 10)) #</code></h1>
+</div>
+<div id="section-28" class="section level1" number="58">
+<h1><span class="header-section-number">58</span> </h1>
+</div>
+<div id="or-look-at-the-distribution-of-specific-topics-over-time."
+class="section level1" number="59">
+<h1><span class="header-section-number">59</span> Or look at the
+distribution of specific topics over time.</h1>
+</div>
+<div id="section-29" class="section level1" number="60">
+<h1><span class="header-section-number">60</span> </h1>
+</div>
+<div
+id="r-this-one-requires-a-more-balanced-topic-mixture-to-be-very-meaningful-which-the-nobel-corpus-with-its-current-fit-does-to-have-topics-filterstr_detectnew_topic-war-ggplotaesdocument-gamma-geom_lineaesgroup-new_topic-color-new_topic-scale_x_discretebreaks-seq1905-2019-10"
+class="section level1" number="61">
+<h1><span class="header-section-number">61</span>
+<code>{r} # # This one requires a more balanced topic mixture to be very meaningful, which the Nobel corpus with its current fit does to have # topics %&gt;% #   filter(str_detect(new_topic, "war")) %&gt;% #   ggplot(aes(document, gamma)) + #   geom_line(aes(group = new_topic, color = new_topic)) + #   scale_x_discrete(breaks = seq(1905, 2019, 10)) #</code></h1>
+</div>
+<div id="section-30" class="section level1" number="62">
+<h1><span class="header-section-number">62</span> </h1>
+</div>
+<div id="stm" class="section level1" number="63">
+<h1><span class="header-section-number">63</span> # STM</h1>
+</div>
+<div id="section-31" class="section level1" number="64">
+<h1><span class="header-section-number">64</span> </h1>
+</div>
+<div
+id="there-are-several-packages-in-r-that-fit-topic-models-most-notably-stm-which-is-incorporates-a-host-of-handy-visualization-tools-as-well-as-the-capacity-to-incorporate-covariates-into-the-model-fit."
+class="section level1" number="65">
+<h1><span class="header-section-number">65</span> There are several
+packages in R that fit topic models, most notably <code>stm</code> which
+is incorporates a host of handy visualization tools as well as the
+capacity to incorporate covariates into the model fit.</h1>
+</div>
+<div id="section-32" class="section level1" number="66">
+<h1><span class="header-section-number">66</span> </h1>
+</div>
+<div id="r-echofalse-out.width70-knitrinclude_graphicsdatastm.png"
+class="section level1" number="67">
+<h1><span class="header-section-number">67</span>
+<code>{r, echo=FALSE, out.width="70%"} # knitr::include_graphics("data/stm.png") #</code></h1>
+</div>
+<div id="roberts2019stm." class="section level1" number="68">
+<h1><span class="header-section-number">68</span> <span
+class="citation">Roberts, Stewart, and Tingley (2019)</span>.</h1>
+</div>
+<div id="section-33" class="section level1" number="69">
+<h1><span class="header-section-number">69</span> </h1>
+</div>
+<div
+id="heres-a-brief-example-of-how-we-can-use-quanteda-to-create-a-document-feature-matrix-and-then-throw-that-into-stm."
+class="section level1" number="70">
+<h1><span class="header-section-number">70</span> Here’s a brief example
+of how we can use <code>quanteda</code> to create a document-feature
+matrix and then throw that into <code>stm</code>.</h1>
+</div>
+<div id="section-34" class="section level1" number="71">
+<h1><span class="header-section-number">71</span> </h1>
+</div>
+<div
+id="r-messagefalse-warningfalse-resultshide-nobel---read_rdsnobel_cleaned.rds-nobel_decade---nobel-mutatedecade-year-10-10-mutateperiod-ifelseyear-1945-pre-wwii-post-wwii-corpustext_field-awardspeech-tokensremove_numbers-true-remove_punc-true-dfm-dfm_removepattern-stop_wordsword-dfm_groupgroups-decade-fit10---stmnobel_decade-k-10-max.em.its-5-init.type-spectral-plotfit10"
+class="section level1" number="72">
+<h1><span class="header-section-number">72</span>
+<code>{r, message=FALSE, warning=FALSE, results='hide'} # nobel &lt;- read_rds("nobel_cleaned.Rds") # nobel_decade &lt;- nobel %&gt;% #   mutate(decade = Year %/% 10 * 10) %&gt;% #   mutate(Period = ifelse(Year &lt;= 1945, "Pre-WWII", "Post-WWII")) %&gt;% #   corpus(text_field = 'AwardSpeech') %&gt;% #   tokens(remove_numbers = TRUE, remove_punc = TRUE) %&gt;% #   dfm() %&gt;% #   dfm_remove(pattern = stop_words$word) %&gt;% #   dfm_group(groups = decade) # fit10 &lt;- stm(nobel_decade, K = 10, max.em.its = 5, init.type = "Spectral") # plot(fit10) #</code></h1>
+</div>
+<div id="section-35" class="section level1" number="73">
+<h1><span class="header-section-number">73</span> </h1>
+</div>
+<div
+id="this-shows-us-the-ten-topics-we-requested-it-find-and-the-expected-proportions.-the-topics-dominate-individual-documents-it-looks-like-making-this-perhaps-not-the-best-example-but-one-well-do-just-to-show-the-mechanics-of-stm."
+class="section level1" number="74">
+<h1><span class="header-section-number">74</span> This shows us the ten
+topics we requested it find and the expected proportions. The topics
+dominate individual documents it looks like, making this perhaps not the
+best example, but one we’ll do just to show the mechanics of
+<code>stm</code>.</h1>
+</div>
+<div id="section-36" class="section level1" number="75">
+<h1><span class="header-section-number">75</span> </h1>
+</div>
+<div
+id="r-messagefalse-warningfalse-resultshide-nobel_periods---nobel-mutatedecade-year-10-10-mutateperiod-ifelseyear-1945-pre-wwii-post-wwii-corpustext_field-awardspeech-tokensremove_numbers-true-remove_punc-true-dfm-dfm_removepattern-stop_wordsword-setting-em-iterations-to-10-for-speed----normally-this-should-be-many-more-often-set-at-75-fit10_period---stmnobel_periods-k-10-content-period-prevalence-period-max.em.its-5-init.type-spectral-plotfit10_period"
+class="section level1" number="76">
+<h1><span class="header-section-number">76</span>
+<code>{r, message=FALSE, warning=FALSE, results='hide'} # nobel_periods &lt;- nobel %&gt;% #   #mutate(decade = Year %/% 10 * 10) %&gt;% #   mutate(Period = ifelse(Year &lt;= 1945, "Pre-WWII", "Post-WWII")) %&gt;% #   corpus(text_field = 'AwardSpeech') %&gt;% #   tokens(remove_numbers = TRUE, remove_punc = TRUE) %&gt;% #   dfm() %&gt;% #   dfm_remove(pattern = stop_words$word) # # setting EM iterations to 10 for speed -- normally this should be many more (often set at 75) # fit10_period &lt;- stm(nobel_periods, K = 10, content =~Period, prevalence =~ Period, max.em.its = 5, init.type = "Spectral") # plot(fit10_period) #</code></h1>
+</div>
+<div id="section-37" class="section level1" number="77">
+<h1><span class="header-section-number">77</span> </h1>
+</div>
+<div
+id="we-have-now-fitted-this-topic-model-with-the-covariable-period-denoting-pre--or-post-wwii-and-this-then-allows-us-to-further-examine-for-example-for-each-topic-the-words-in-the-topic-that-are-more-associated-with-one-variable-or-the-other."
+class="section level1" number="78">
+<h1><span class="header-section-number">78</span> We have now fitted
+this topic model with the covariable <code>Period</code> denoting pre-
+or post-WWII and this then allows us to further examine, for example,
+for each topic the words in the topic that are more associated with one
+variable or the other.</h1>
+</div>
+<div id="section-38" class="section level1" number="79">
+<h1><span class="header-section-number">79</span> </h1>
+</div>
+<div id="r-plotfit10_period-type-perspectives-topics-9"
+class="section level1" number="80">
+<h1><span class="header-section-number">80</span>
+<code>{r} # plot(fit10_period, type = "perspectives", topics = 9) #</code></h1>
+</div>
+<div id="section-39" class="section level1" number="81">
+<h1><span class="header-section-number">81</span> </h1>
+</div>
+<div id="excercises" class="section level1" number="82">
+<h1><span class="header-section-number">82</span> ## Excercises</h1>
+</div>
+<div
+id="run-a-topic-model-on-the-sustainability-report-corpus.-how-can-we-deal-with-year-variables-when-they-are-not-the-name-of-the-document"
+class="section level1" number="83">
+<h1><span class="header-section-number">83</span> - Run a topic model on
+the sustainability report corpus. How can we deal with year variables
+when they are not the name of the document?</h1>
+</div>
+<div
+id="experiment-more-with-the-nobel-corpus.-can-you-find-a-bettermore-meaningful-model-fit"
+class="section level1" number="84">
+<h1><span class="header-section-number">84</span> - Experiment more with
+the Nobel corpus. Can you find a better/more meaningful model fit?</h1>
+</div>
+<div id="section-40" class="section level1" number="85">
+<h1><span class="header-section-number">85</span> </h1>
+</div>
+<div id="other-topic-modeling-resources" class="section level1"
+number="86">
+<h1><span class="header-section-number">86</span> ## Other topic
+modeling resources</h1>
+</div>
+<div id="section-41" class="section level1" number="87">
+<h1><span class="header-section-number">87</span> </h1>
+</div>
+<div
+id="this-is-only-the-most-basic-of-introductions-to-topic-modeling.-for-more-information-on-topic-modeling-and-analysis-in-the-tidyverse-see-chapter-6-of-silge2017text."
+class="section level1" number="88">
+<h1><span class="header-section-number">88</span> This is only the most
+basic of introductions to topic modeling. For more information on topic
+modeling and analysis in the tidyverse, see chapter 6 of <span
+class="citation">Silge and Robinson (2017)</span>.</h1>
+</div>
+<div id="section-42" class="section level1" number="89">
+<h1><span class="header-section-number">89</span> </h1>
+</div>
+<div id="for-a-good-explainer-on-topic-models-see-underwood2012."
+class="section level1" number="90">
+<h1><span class="header-section-number">90</span> For a good explainer
+on topic models, see <span class="citation">Underwood
+(2012)</span>.</h1>
+</div>
+<div id="section-43" class="section level1" number="91">
+<h1><span class="header-section-number">91</span> </h1>
+</div>
+<div id="cosine-frequency" class="section level1" number="92">
+<h1><span class="header-section-number">92</span> # Cosine
+frequency</h1>
+</div>
+<div id="section-44" class="section level1" number="93">
+<h1><span class="header-section-number">93</span> </h1>
+</div>
+<div
+id="another-way-to-think-about-differences-between-documents-is-cosine-frequency.-if-we-imagine-each-document-being-represented-by-a-vector-in-n-dimensional-space-where-the-values-of-the-vector-are-the-counts-more-often-tf-idfs-in-practice-of-words-contained-in-the-document-then-we-can-use-very-simple-math-to-measure-the-angle-of-distance-between-two-document-vectors.-this-is-refered-to-as-cosine-difference---stemming-from-the-law-of-cosines-and-closely-related-to-the-dot-product-for-those-who-remember-that-from-math-class.-fittingly-for-cosines-1-denotes-that-the-vectors-are-pointing-the-exact-same-direction-and-that-there-is-no-different-what-would-happen-if-measured-the-distace-between-two-documents-or-multiples-of-the-same-document.-zero-denotes-no-similarity-we-would-say-they-are-orthogonal-there-is-no-overlap-in-vocabulary.-important-to-remember-in-interpreting-cosine-distances-is-that-they-are-only-significant-between-the-two-documents-you-are-comparing-if-document-a-has-low-cosine-distance-to-both-documents-b-and-c-this-does-not-denote-that-b-and-c-are-similar-they-are-simply-both-not-similar-to-a-they-might-be-dissimilar-in-quite-different-ways."
+class="section level1" number="94">
+<h1><span class="header-section-number">94</span> Another way to think
+about differences between documents is cosine frequency. If we imagine
+each document being represented by a vector in n-dimensional space,
+where the values of the vector are the counts (more often tf-idfs in
+practice) of words contained in the document, then we can use very
+simple math to measure the angle of distance between two document
+vectors. This is refered to as cosine difference - stemming from the law
+of cosines and closely related to the <em>dot product</em> for those who
+remember that from math class. Fittingly for cosines, 1 denotes that the
+vectors are pointing the exact same direction and that there is no
+different – what would happen if measured the distace between two
+documents or multiples of the same document. Zero denotes no similarity
+– we would say they are <em>orthogonal</em> – there is no overlap in
+vocabulary. Important to remember in interpreting cosine distances is
+that they are only significant between the two documents you are
+comparing – if document A has low cosine distance to both documents B
+and C, this does not denote that B and C are similar, they are simply
+both not similar to A (they might be dissimilar in quite different
+ways.)</h1>
+</div>
+<div id="section-45" class="section level1" number="95">
+<h1><span class="header-section-number">95</span> </h1>
+</div>
+<div id="lets-look-at-a-quick-implementation." class="section level1"
+number="96">
+<h1><span class="header-section-number">96</span> Let’s look at a quick
+implementation.</h1>
+</div>
+<div id="r-cosine_diff---textstat_similnobel_decade-method-cosine"
+class="section level1" number="97">
+<h1><span class="header-section-number">97</span>
+<code>{r} # (cosine_diff &lt;- textstat_simil(nobel_decade, method = "cosine")) #</code></h1>
+</div>
+<div id="section-46" class="section level1" number="98">
+<h1><span class="header-section-number">98</span> </h1>
+</div>
+<div
+id="we-have-used-quanteda-to-do-this-and-with-it-come-a-bunch-of-nice-features-you-see-above-how-easy-it-was-to-stopword.-quanteda-also-makes-it-easy-to-trim-our-corpus-in-ways-that-might-make-more-sense-to-run-analysis-on."
+class="section level1" number="99">
+<h1><span class="header-section-number">99</span> We have used
+<code>quanteda</code> to do this and with it come a bunch of nice
+features (you see above how easy it was to stopword).
+<code>Quanteda</code> also makes it easy to trim our corpus in ways that
+might make more sense to run analysis on.</h1>
+</div>
+<div id="section-47" class="section level1" number="100">
+<h1><span class="header-section-number">100</span> </h1>
+</div>
+<div
+id="r-dfm_small---dfm_trimnobel_decade-min_termfreq-3-min_docfreq-2"
+class="section level1" number="101">
+<h1><span class="header-section-number">101</span>
+<code>{r} # dfm_small &lt;- dfm_trim(nobel_decade, min_termfreq = 3, min_docfreq = 2) #</code></h1>
+</div>
+<div id="section-48" class="section level1" number="102">
+<h1><span class="header-section-number">102</span> </h1>
+</div>
+<div
+id="quanteda-has-multiples-ways-to-test-proximity-distance-and-so-on.-one-way-of-visualizing-distance-might-be-clustering-to-take-all-documents-here-the-documents-are-each-decades-worth-of-nobel-award-speeches-and-break-them-into-two-clusters-based-on-their-euclidean-distance-to-do-it-again-and-again-and-so-forth."
+class="section level1" number="103">
+<h1><span class="header-section-number">103</span> <code>Quanteda</code>
+has multiples ways to test proximity, distance, and so on. One way of
+visualizing distance might be clustering – to take all documents (here
+the documents are each decade’s worth of Nobel award speeches) and break
+them into two clusters based on their Euclidean distance, to do it
+again, and again, and so forth.</h1>
+</div>
+<div id="section-49" class="section level1" number="104">
+<h1><span class="header-section-number">104</span> </h1>
+</div>
+<div
+id="r-eu_dist---textstat_distdfm_weightnobel_decade-scheme-prop-cluster---hclustas.disteu_dist-clusterlabels---docnamesnobel_decade-plotcluster-xlab-sub-main-clustered-euclidean-distance"
+class="section level1" number="105">
+<h1><span class="header-section-number">105</span>
+<code>{r} # eu_dist &lt;- textstat_dist(dfm_weight(nobel_decade, scheme = "prop")) # cluster &lt;- hclust(as.dist(eu_dist)) # cluster$labels &lt;- docnames(nobel_decade) # plot(cluster, xlab = "", sub = "", main = "Clustered Euclidean Distance") #</code></h1>
+</div>
+<div id="section-50" class="section level1" number="106">
+<h1><span class="header-section-number">106</span> </h1>
+</div>
+<div
+id="finally-another-way-to-envision-differences-between-documents-is-to-calculate-the-keyness-which-analyses-relative-term-frequency-between-documents.-here-we-make-the-target-group-post-wwii-nobel-speeches-and-the-baseline-those-from-1905-up-to-wwii."
+class="section level1" number="107">
+<h1><span class="header-section-number">107</span> Finally, another way
+to envision differences between documents is to calculate the “keyness”,
+which analyses relative term frequency between documents. Here we make
+the target group post-WWII Nobel speeches, and the baseline those from
+1905 up to WWII.</h1>
+</div>
+<div id="section-51" class="section level1" number="108">
+<h1><span class="header-section-number">108</span> </h1>
+</div>
+<div
+id="r-keyness---textstat_keynessnobel_decade-target-nobel_decadedecade-1945-textplot_keynesskeyness"
+class="section level1" number="109">
+<h1><span class="header-section-number">109</span>
+<code>{r} # keyness &lt;- textstat_keyness(nobel_decade, target = nobel_decade$decade &gt;= 1945) # textplot_keyness(keyness) #</code></h1>
+</div>
+<div id="section-52" class="section level1" number="110">
+<h1><span class="header-section-number">110</span> </h1>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered"># References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
+<div id="ref-roberts2019stm" class="csl-entry">
+Roberts, Margaret E, Brandon M Stewart, and Dustin Tingley. 2019.
+<span>“Stm: An r Package for Structural Topic Models.”</span>
+<em>Journal of Statistical Software</em> 91 (1): 1–40. <a
+href="https://rdrr.io/cran/stm/f/inst/doc/stmVignette.pdf">https://rdrr.io/cran/stm/f/inst/doc/stmVignette.pdf</a>.
+</div>
+<div id="ref-silge2017text" class="csl-entry">
+Silge, Julia, and David Robinson. 2017. <em>Text Mining with
+<span>R</span>: A Tidy Approach</em>. "O’Reilly Media, Inc.". <a
+href="https://www.tidytextmining.com/">https://www.tidytextmining.com/</a>.
+</div>
+<div id="ref-underwood2012" class="csl-entry">
+Underwood, Ted. 2012. <span>“Topic Modeling Made Just Simple
+Enough.”</span> 2012. <a
+href="https://tedunderwood.com/2012/04/07/topic-modeling-made-just-simple-enough/">https://tedunderwood.com/2012/04/07/topic-modeling-made-just-simple-enough/</a>.
+</div>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Perhaps the most popular topic modeling package in R has
+now become <code>stm</code> – see <a
+href="https://juliasilge.com/blog/sherlock-holmes-stm/">these</a> <a
+href="https://juliasilge.com/blog/evaluating-stm/">nice</a> blog posts
+by Julia Silge for examples of working with <code>stm</code> through
+<code>tidytext</code>.<a href="#fnref1"
+class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+<br><br><p>2022.
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

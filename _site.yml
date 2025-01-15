@@ -1,0 +1,61 @@
+name: "Quantifying History"
+navbar:
+  # title: "NTNU Workshop in Text Analysis"
+  type: inverse
+  left:
+    - text: "Overview"
+      icon: fa-home
+      href: index.html
+    - text: "Reading List"
+      icon: fa-list-ul
+      href: pensum.html
+    - text: "Schedule"
+      icon: fa-info
+      href: schedule.html
+    - text: "Quantitative methods"
+      icon: fa-book
+      menu: 
+      - text: "Day 1"
+      - text: "Descriptive statistics"
+        href: 1_1-DescStat.html
+      - text: "Day 2"
+      - text: "Correlation analysis"
+        href: 2_1-CorrAnalysis.html
+      - text: "Day 3"
+      - text: "Regression analysis"
+        href: 3_1-RegAnalysis.html
+      - text: "Day 4"
+      - text: "Uncertainty"
+        href: 4_1-Uncertainty.html
+    - text: "Computational text analysis"
+      icon: fa-book
+      menu:
+      - text: "Day 1"
+      - text: "Reading and cleaning text data"
+        href: 1_2-readingcleaning.html
+      - text: "Day 2"
+      - text: "Word frequency and dictionary methods"
+        href: 2_2-WordFreq.html
+      - text: "Day 3"
+      - text: "Topic modelling"
+        href: 3_2-Topicmodelling.html
+      - text: "Day 4"
+      - text: "Word embedding"
+        href: 4_2-WordEmbedding.html
+    # - text: "Wrap-up"
+    #   icon: fa-book
+    #   href: wrapup.html
+  # right:
+  #   - icon: fa-envelope fa-lg
+  #     href: "mailto: gregory.fergusoncradler@inn.no"
+output:
+  html_document:
+    theme: readable
+    highlight: textmate
+    include:
+      after_body: footer.html
+    css: styles.css
+    citation_package: biblatex
+bibliography: ghfc_pubs.bib
+output_dir: docs
+

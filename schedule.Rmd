@@ -1,0 +1,44 @@
+---
+title: "Quantifying History"
+subtitle: "Norwegian Research School in History, NTNU, Trondheim"
+date: "February 3-7, 2025"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+---
+
+**How do we want to change this?**
+
+<h2>Schedule</h2>
+<br>
+
+<h3>Monday, February 3</h3>
+
+10:00 – 13:00	  Session 1.1: Descriptive statistics 
+
+14:00 -- 17:00	Session 1.2: Collecting, reading and cleaning text data in R 
+
+<h3>Tuesday, February 4</h3>
+
+9:00 - 12:00  Session 2.1: Correlation analysis
+
+13:00 - 16:00	Session 2.2: Word frequency, dictionary methods, correlation/collocation analysis
+
+<h3>Wednesday, February 5</h3>
+
+9:00 - 12:00  Session 3.1: Regression analysis
+
+13:00 - 16:00	Session 3.2: Topic models [[PDF](Presentations/Topic_models.pdf)]
+
+<h3>Thursday, February 6</h3>
+
+9:00 - 12:00  Session 4.1: Dealing with uncertainty
+
+13:00 - 16:00	Session 4.2: Word embedding [[PDF](Presentations/Word_embedding.pdf)]
+
+<h3>Friday, February 7</h3>
+
+9:00 - 16:00  Session 5: Student work and presentations
