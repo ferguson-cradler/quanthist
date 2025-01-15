@@ -21,9 +21,6 @@ Secondly, before the course begins, please follow the instructions for installin
 
 - [R Tutorial](TutorialInstructions.pdf).
 
-<center> #### *Do we want to mention suggested readings or anything else here???*
-</center>
-
 <!-- #### Additional suggested readings -->
 
 <!-- Other helpful books on programming in R include: -->

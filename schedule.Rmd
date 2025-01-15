@@ -9,9 +9,6 @@ output:
     toc_float: true
     number_sections: true
 ---
-<center>
-### *How do we want to change this???*
-</center>
 
 <h2>Schedule</h2>
 <br>
