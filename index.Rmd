@@ -9,8 +9,8 @@ output:
     toc_depth: 3
     toc_float: true
     number_sections: false
-bibliography: textanalysis_general.bib
-nocite: '@*'
+# bibliography: textanalysis_general.bib
+# nocite: '@*'
 ---
 
 <!-- To render whole site: rmarkdown::render_site() -->
@@ -61,4 +61,4 @@ We will be using R, a widely popular statistical software, which has the added a
 
 <!-- If you have problems installing `tabulizer`, see [these](https://github.com/ropensci/tabulizer) other options and troubleshooting techniques. -->
 
-# References and Sources
+<!-- # References and Sources -->
