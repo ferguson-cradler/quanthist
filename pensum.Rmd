@@ -7,27 +7,19 @@ output:
     toc: true
     toc_depth: 3
     toc_float: true
-    number_sections: true
+    number_sections: false
 ---
+
+<!-- $$\\[.1in]$$ -->
+<br>
 
 ### Reading List
 
 
 There is one required reading for the course:
 
-- Tapia and Ferguson-Cradler, *Quanifying History* (to be distributed via email.)
+- Beltrán Tapia and Ferguson-Cradler, *Quanifying History* (to be distributed via email).
 
 Secondly, before the course begins, please follow the instructions for installing R and RStudio and completing some basic R tutorials at the link below:
 
 - [R Tutorial](TutorialInstructions.pdf).
-
-<!-- #### Additional suggested readings -->
-
-<!-- Other helpful books on programming in R include: -->
-
-<!-- - Wickham, H. & Grolemund, G. (2022), R for Data Science. https://r4ds.had.co.nz -->
-
-<!-- - Imai, K., & Webb Williams, N. (2022), Quantitative Social Science: An introduction in tidyverse.  -->
-
-<!-- - Hermansen, Silje S.L. (2019) Lær deg R: en innføring i statistikkprogrammets muligheter. [en fin norskspråklig innføring i R og i kvantitative metoder med gode samfunnsvitenskapelige eksempler] -->
-

@@ -7,9 +7,10 @@ output:
     toc: true
     toc_depth: 3
     toc_float: true
-    number_sections: true
+    number_sections: false
 ---
 
+<br>
 <h2>Schedule</h2>
 <br>
 
@@ -29,14 +30,14 @@ output:
 
 9:00 - 12:00  Session 3.1: Regression analysis
 
-13:00 - 16:00	Session 3.2: Topic models [[PDF](Presentations/Topic_models.pdf)]
+13:00 - 16:00	Session 3.2: Topic models  <!-- [[PDF](Presentations/Topic_models.pdf)] -->
 
 <h3>Thursday, February 6</h3>
 
 9:00 - 12:00  Session 4.1: Dealing with uncertainty
 
-13:00 - 16:00	Session 4.2: Word embedding [[PDF](Presentations/Word_embedding.pdf)]
+13:00 - 16:00	Session 4.2:  Word embedding <!-- [[PDF](Presentations/Word_embedding.pdf)] -->
 
 <h3>Friday, February 7</h3>
 
-9:00 - 16:00  Session 5: Student work and presentations
+9:00 - 16:00  Session 5: Student work and presentations ???
