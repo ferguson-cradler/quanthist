@@ -1,0 +1,15 @@
+---
+title: "Session 4.1: Dealing with uncertainty"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+bibliography: textanalysis.bib
+---
+
+Space constitutes a crucial dimension in our understanding of any historical process. Regardless whether you are studying individuals, households, firms, states or any other historical subject, their location is usually a relevant dimension, both in itself and in relation to other locations (natural resources, schools, hospitals, transportation and communication systems, etc.), as well as to the other subjects themselves. 
+
+This session will show how to create quality maps. Drawing maps not only allows explicitly considering spatial dimensions in our analysis, but it is also a powerful way of telling stories and producing compelling arguments. Mapping however is not an end in itself, but it is also a research tool that enables interrogating historical sources in different ways. Exploring spatial patterns usually raises new questions and hypotheses. 
+

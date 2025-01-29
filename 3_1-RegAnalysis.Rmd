@@ -8,7 +8,9 @@ output:
     number_sections: true
 bibliography: textanalysis.bib
 ---
-Under construction.
+Regression analysis is an extremely useful tool that can be applied to almost any historical question. We are now going to expand the focus of session 2 and explore the possibility of adding multiple explanatory variables in our regression models. **Multivariate regression analysis** indeed implies relating the dependent variable ($Y$) to more than one explanatory variable.
+
+Adding more Xs not only helps us better understanding the variable we want to explain ($Y$) by increasing the explanatory power of the model (R-squared), but it also mitigates the possibility that the effect of our variable of interest (X) is not driven by other variables. It indeed allows estimating the link between $X$ and $Y$ holding the other variables included in the regression constant. Having multiple explanatory variables also allows assessing the relative importance of competing explanations.
 
 <!-- Script available [here](data/3_regression.R) -->
 

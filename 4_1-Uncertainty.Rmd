@@ -9,4 +9,6 @@ output:
 bibliography: textanalysis.bib
 ---
 
-Under construction.
+Historians tend to work with samples extracted from surviving historical records, which in turn are in itself a sample of a larger population. Even if we assume that these samples are representative of the underlying population they refer to, how can we be sure that the results we observe in our sample resemble what we would find if we could study the full population (the *truth*)? Chance definitely plays a role in what we observe: what if we would have ended with a different set of records? The observed results would be different but, how different? How the results obtained from a sample fit the overall population we want to study? Quantification allows the possibility of measuring the accuracy of estimations based on historical samples and therefore discern pattern from chance. 
+
+This session explores how statistical tools help us bounding the role of chance (that is, distinguishing signal from noise) and therefore the extent of our ignorance.

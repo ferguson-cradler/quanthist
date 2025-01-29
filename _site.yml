@@ -22,11 +22,14 @@ navbar:
       - text: "Correlation analysis"
         href: 2_1-CorrAnalysis.html
       - text: "Day 3"
-      - text: "Regression analysis"
-        href: 3_1-RegAnalysis.html
-      - text: "Day 4"
       - text: "Uncertainty"
-        href: 4_1-Uncertainty.html
+        href: 4_1-Uncertainty.html         
+      - text: "Day 4"
+      - text: "Regression analysis"
+        href: 3_1-RegAnalysis.html   
+      - text: "Day 5"
+      - text: "Mapping"
+        href: 5_1-Mapping.html           
     - text: "Computational text analysis"
       icon: fa-book
       menu:

@@ -9,7 +9,12 @@ output:
 bibliography: textanalysis.bib
 ---
 
-Under construction.
+This section will focus on to systematize and extract information from historical sources, regardless this information is **categorical**, **ordinal** and **numerical**. Displaying frequency tables, plotting histograms and reporting summary statistics (i.e. the mean, the minimum and maximum values, the standard deviation, etc.) helps characterising how our data looks like. 
+
+As well as considering just one variable at a time (**univariate statistics**) and then move on to talk about several variables simultaneously (**bivariate statistics**). Making sense of the source using descriptive statistics can actually get you a long way in your understanding of the historical setting you are studying. 
+
+In the process, we will also learn how to restrict the analysis to particular subsamples of our data and to prepare the data set for subsequent analyses. Apart from correcting potential typos and errors derived from digitising the original source into a dataset, this includes re-categorisation, that is, defining the categories within which each observation is classified. 
+
 
 <!-- Paisley data set available [here](data/paisley_data.xls). -->
 
