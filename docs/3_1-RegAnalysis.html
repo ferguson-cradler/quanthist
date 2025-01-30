@@ -361,11 +361,15 @@ div.tocify {
     </li>
     <li class="dropdown-header">Day 3</li>
     <li>
-      <a href="3_1-RegAnalysis.html">Regression analysis</a>
+      <a href="4_1-Uncertainty.html">Uncertainty</a>
     </li>
     <li class="dropdown-header">Day 4</li>
     <li>
-      <a href="4_1-Uncertainty.html">Uncertainty</a>
+      <a href="3_1-RegAnalysis.html">Regression analysis</a>
+    </li>
+    <li class="dropdown-header">Day 5</li>
+    <li>
+      <a href="5_1-Mapping.html">Mapping</a>
     </li>
   </ul>
 </li>
@@ -413,7 +417,22 @@ div.tocify {
 </div>
 
 
-<p>Under construction.</p>
+<p>Regression analysis is an extremely useful tool that can be applied
+to almost any historical question. We are now going to expand the focus
+of session 2 and explore the possibility of adding multiple explanatory
+variables in our regression models. <strong>Multivariate regression
+analysis</strong> indeed implies relating the dependent variable (<span
+class="math inline">\(Y\)</span>) to more than one explanatory
+variable.</p>
+<p>Adding more Xs not only helps us better understanding the variable we
+want to explain (<span class="math inline">\(Y\)</span>) by increasing
+the explanatory power of the model (R-squared), but it also mitigates
+the possibility that the effect of our variable of interest (X) is not
+driven by other variables. It indeed allows estimating the link between
+<span class="math inline">\(X\)</span> and <span
+class="math inline">\(Y\)</span> holding the other variables included in
+the regression constant. Having multiple explanatory variables also
+allows assessing the relative importance of competing explanations.</p>
 <!-- Script available [here](data/3_regression.R) -->
 <!-- ```{r, eval = FALSE} -->
 <!-- # Install packages (if needed) -->

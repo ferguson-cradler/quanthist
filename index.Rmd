@@ -17,7 +17,7 @@ output:
 
 # Overview
 
-How can quantitative methods allow historians to make sense of the ever-increasing wealth of digitalised sources, both numeric and textual? How can historians use quantitative and computational methods to gain a better overview of their source base, ask new questions, and supplement and enhance close reading? 
+How can quantitative methods allow historians to make sense of the ever-increasing wealth of digitized sources, both numeric and textual? How can historians use quantitative and computational methods to gain a better overview of their source base, ask new questions, and supplement and enhance close reading? 
 
 This course provides an in-depth introduction to quantitative and computational methods, covering some of the techniques most widely used in research in the historical and social sciences. The hands-on course will teach students to apply basic quantitative methods to real historical information, both quantitative and qualitative, as well as equip them with the necessary background to understand and interpret the historical literature using these methods. 
 
