@@ -10,3 +10,15 @@ bibliography: textanalysis.bib
 ---
 
 This chapter explores the relationship between two variables. It will provide the tools to measure the strength of the association (**correlation analysis**) and estimate the extent to which variations in one variable translate into differences in the other (**regression analysis**). We will focus on simple relationships (involving just two variables). Importantly, we will explore how two variables relate to each other, regardless whether the information they contain is numerical, ordinal or qualitative.
+
+### Download the following for this session:
+
+#### Script: 
+
+[Correlation-Regression Analysis](scripts/2_corr_reg.R)
+
+
+#### Data:
+
+We will be continue using the Paisley dataset. 
+
