@@ -25,7 +25,7 @@ We will also be working with some examples of historical documents. Download the
 
 * [Sample Stortings melding from 1960-61](data/stmeld8_kongo.pdf).
 
-* [Statoil's 2001 Sustainability Report](https://www.equinor.com/sustainability/sustainability-reports-archive) (also [here](data/sustainability-report-2001-equinor.pdf))
+* [Statoil's 2001 Sustainability Report](data/sustainability-report-2001-equinor.pdf) (taken from the website [here](https://www.equinor.com/sustainability/sustainability-reports-archive)).
 
 * [King Haakons 1925 speech to the Norwegian parliament](data/Storting_KongHaakon_1925.pdf)
 
@@ -34,5 +34,5 @@ Finally we will begin to work with two sample corpora that we will continue to u
 * [Nobel Peace Prize award speeches](data/NobelPeace.csv).
 Nobel Peace Prize award ceremony speeches since 1905. They are scraped from https://www.nobelprize.org with no cleaning or improvements so that we can practice all steps of the process and see the advantages and potential problems in working with digital corpora. Saved as a csv-file.
 
-* [Sustainability reports of major oil corporation]([here](data/srps.csv). 
+* [Sustainability reports of major oil corporations](data/srps.csv). 
 These reports were downloaded by hand from the companies' respective websites, digitized using pdftabula and saved as a csv-file.
