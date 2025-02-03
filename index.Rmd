@@ -52,7 +52,7 @@ The following script will install (if not already installed) and load all packag
 
 ```{r, eval = FALSE}
 if (!requireNamespace("xfun")) install.packages("xfun")
-xfun::pkg_attach2("tidyverse", "readtext", "lubridate", "rvest", "tidytext", "stopwords", "SnowballC", "widyr", "quanteda", "writexl", "textstem", "koRpus.lang.en", "koRpus", "sylly", "wordcloud", "wordcloud2", "RColorBrewer", "entity", "udpipe", "textdata", "quanteda.textstats", "topicmodels", "stm", "shiny", "miniUI", "tsne")
+xfun::pkg_attach2("readtext", "lubridate", "rvest", "tidytext", "stopwords", "SnowballC", "widyr", "quanteda", "textstem", "koRpus.lang.en", "koRpus", "sylly", "wordcloud", "wordcloud2", "RColorBrewer", "entity", "udpipe", "textdata", "quanteda.textstats", "topicmodels", "stm", "shiny", "miniUI", "tsne")
 ```
 
 Tabulapdf has a more involved installation, see: (https://docs.ropensci.org/tabulapdf/).
