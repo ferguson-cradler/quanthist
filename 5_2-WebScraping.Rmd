@@ -1,0 +1,20 @@
+---
+title: "Session 5.2: Web Scraping"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+bibliography: textanalysis.bib
+---
+
+### Session overview
+
+An increasingly large amount of historical primary sources are available online. New packages in the R world make it increasingly possible to collect information in R. In this short session we will learn the very basics of web scraping: the principles of web scraping, R packages that can be used, and will will look at some simple examples. 
+
+### Download the following for this session
+
+<!-- [Script for this session](scripts/Day5-web-scraping.R). -->
+
+Coming soon.

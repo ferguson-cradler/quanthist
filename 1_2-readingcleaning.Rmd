@@ -1,9 +1,6 @@
 ---
 title: 'Session 1.2: Collecting, reading and cleaning text data'
 output:
-  pdf_document:
-    toc: true
-    toc_depth: '3'
   html_document:
     toc: true
     toc_depth: 3
@@ -18,7 +15,7 @@ In this session we will learn how to read texts into R. We will see how to handl
 
 The second major goal of this session is to consider how to handle text in R. We will go further into regular expressions (those of you who have done the tutorial will have already encountered some of this) and then learn common techniques for cleaning up text in R and formatting it so that it is in a condition we can begin to do some text analysis on. Using tools of data frame manipulation we will then learn one method for creating Google n-gram-style graphs.
 
-### Download the following for this session:
+### Download the following for this session
 
 [Script for this session](scripts/Day1-reading-cleaning.R).
 
@@ -32,7 +29,10 @@ We will also be working with some examples of historical documents. Download the
 
 * [King Haakons 1925 speech to the Norwegian parliament](data/Storting_KongHaakon_1925.pdf)
 
+Finally we will begin to work with two sample corpora that we will continue to use over the next week:
 
+* [Nobel Peace Prize award speeches](data/NobelPeace.csv).
+Nobel Peace Prize award ceremony speeches since 1905. They are scraped from https://www.nobelprize.org with no cleaning or improvements so that we can practice all steps of the process and see the advantages and potential problems in working with digital corpora. Saved as a csv-file.
 
-
-
+* [Sustainability reports of major oil corporation]([here](data/srps.csv). 
+These reports were downloaded by hand from the companies' respective websites, digitized using pdftabula and saved as a csv-file.

@@ -46,6 +46,14 @@ The only required reading prior to the course is an introductory text that will 
 
 We will be using R, a widely popular statistical software, which has the added advantage of being free. Please download it in your laptops before coming to Trondheim. In addition, we strongly encourage to complete a short sequence of tutorials to smooth the learning curve, so you are not completely new to the software before the course starts. Instructions for installing R, RStudio, and R tutorials are [here](TutorialInstructions.pdf).
 
+List of packages to be used with normal R installation: tidyverse, readtext, lubridate, rvest, tidytext, stopwords, SnowballC, widyr, quanteda, writexl, textstem, koRpus.lang.en, koRpus, sylly, wordcloud, wordcloud2, RColorBrewer, entity, udpipe, textdata, quanteda.textstats, topicmodels, stm, shiny, miniUI
+
+
+List of packages with more difficult R installation and maybe links to troubleshooting pages: 
+- tubulapdf (https://docs.ropensci.org/tabulapdf/)
+
+
+
 <!-- # Practicalities -->
 
 <!-- The following script will install (if not already installed) and load all packages used in this tutorial. (there's bound to be a couple we've forgotten, we'll add these as we go). -->

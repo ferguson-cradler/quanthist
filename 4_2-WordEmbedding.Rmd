@@ -9,4 +9,14 @@ output:
 bibliography: textanalysis.bib
 ---
 
-Under construction.
+### Session overview
+
+Just as we saw how documents could be vectorized yesterday, today we explore how words can be turned into vectors and the kinds of analysis this enables. We will begin with a short discussion of what a word vector might be and look at an example of analysis based on word vectors in the interpretive social sciences.
+
+In the practical part of the session we look at how to train embedding models on our own corpora and some of the types of analysis we can do in R.
+
+### Download the following for this session
+
+<!-- [Script for this session](scripts/Day4-word-embedding.R). -->
+
+Coming soon.

@@ -16,15 +16,17 @@ output:
 
 <h3>Monday, February 3</h3>
 
-10:00 – 13:00	  Session 1.1: Descriptive statistics 
+10:00 - 10:30  Welcome, course overview and introductions
 
-14:00 -- 17:00	Session 1.2: Collecting, reading and cleaning text data in R 
+10:30 – 13:00  Session 1.1: Descriptive statistics 
+
+14:00 - 17:00	 Session 1.2: Collecting, reading and cleaning textual data in R 
 
 <h3>Tuesday, February 4</h3>
 
 9:00 - 12:00  Session 2.1: Correlation analysis
 
-13:00 - 16:00	Session 2.2: Word frequency, dictionary methods, correlation/collocation analysis
+13:00 - 16:00  Session 2.2: Word frequency, dictionary methods, correlation/collocation analysis
 
 <h3>Wednesday, February 5</h3>
 
@@ -42,4 +44,6 @@ output:
 
 9:00 - 12:00 Session 5.1: Mapping
 
-13:00 - 15:00  Independent work and conclusion
+13:00 - 14:30  Session 5.2: Web scraping
+
+14:30 - 15:00  Conclusion

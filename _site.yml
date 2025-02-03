@@ -45,6 +45,9 @@ navbar:
       - text: "Day 4"
       - text: "Word embedding"
         href: 4_2-WordEmbedding.html
+      - text: "Day 5"
+      - text: "Web scraping"
+        href: 5-2-WebScraping.html
     # - text: "Wrap-up"
     #   icon: fa-book
     #   href: wrapup.html
