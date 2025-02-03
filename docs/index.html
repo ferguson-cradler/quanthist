@@ -399,6 +399,10 @@ div.tocify {
     <li>
       <a href="4_2-WordEmbedding.html">Word embedding</a>
     </li>
+    <li class="dropdown-header">Day 5</li>
+    <li>
+      <a href="5-2-WebScraping.html">Web scraping</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -487,17 +491,17 @@ complete a short sequence of tutorials to smooth the learning curve, so
 you are not completely new to the software before the course starts.
 Instructions for installing R, RStudio, and R tutorials are <a
 href="TutorialInstructions.pdf">here</a>.</p>
-<!-- # Practicalities -->
-<!-- The following script will install (if not already installed) and load all packages used in this tutorial. (there's bound to be a couple we've forgotten, we'll add these as we go). -->
-<!-- ```{r, eval = FALSE} -->
-<!-- if (!requireNamespace("xfun")) install.packages("xfun") -->
-<!-- xfun::pkg_attach2("tidyverse", "lubridate", "rvest", "stringr", "readtext", "tesseract", "tidytext", "SnowballC", "wordcloud", "wordcloud2", "widyr", "quanteda", "quanteda.textstats", "magrittr", "pdftools", "devtools", "tsne", "topicmodels", "readtext") -->
-<!-- # The following two packages have Java dependencies that might give some (especially Windows) machines trouble. No worries if they don't load on your computer, we will demonstrate running them on RStudio Cloud. -->
-<!-- xfun::pkg_attach2("tabulizer", "openNLP") -->
-<!-- install.packages("devtools") -->
-<!-- devtools::install_github("bmschmidt/wordVectors") -->
-<!-- ``` -->
-<!-- If you have problems installing `tabulizer`, see [these](https://github.com/ropensci/tabulizer) other options and troubleshooting techniques. -->
+</div>
+<div id="practicalities" class="section level1">
+<h1>Practicalities</h1>
+<p>The following script will install (if not already installed) and load
+all packages used in this tutorial. (there’s bound to be a couple we’ve
+forgotten, we’ll add these as we go).</p>
+<pre class="r"><code>if (!requireNamespace(&quot;xfun&quot;)) install.packages(&quot;xfun&quot;)
+xfun::pkg_attach2(&quot;tidyverse&quot;, &quot;readtext&quot;, &quot;lubridate&quot;, &quot;rvest&quot;, &quot;tidytext&quot;, &quot;stopwords&quot;, &quot;SnowballC&quot;, &quot;widyr&quot;, &quot;quanteda&quot;, &quot;writexl&quot;, &quot;textstem&quot;, &quot;koRpus.lang.en&quot;, &quot;koRpus&quot;, &quot;sylly&quot;, &quot;wordcloud&quot;, &quot;wordcloud2&quot;, &quot;RColorBrewer&quot;, &quot;entity&quot;, &quot;udpipe&quot;, &quot;textdata&quot;, &quot;quanteda.textstats&quot;, &quot;topicmodels&quot;, &quot;stm&quot;, &quot;shiny&quot;, &quot;miniUI&quot;, &quot;tsne&quot;)</code></pre>
+<p>Tabulapdf has a more involved installation, see: (<a
+href="https://docs.ropensci.org/tabulapdf/"
+class="uri">https://docs.ropensci.org/tabulapdf/</a>).</p>
 <!-- # References and Sources -->
 </div>
 <div class="footnotes footnotes-end-of-document">

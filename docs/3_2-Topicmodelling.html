@@ -62,6 +62,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="styles.css" type="text/css" />
 
@@ -398,6 +421,10 @@ div.tocify {
     <li>
       <a href="4_2-WordEmbedding.html">Word embedding</a>
     </li>
+    <li class="dropdown-header">Day 5</li>
+    <li>
+      <a href="5-2-WebScraping.html">Web scraping</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -417,7 +444,37 @@ div.tocify {
 </div>
 
 
-<p>Under construction.</p>
+<div id="session-overview" class="section level3" number="1">
+<h3><span class="header-section-number">1</span> Session overview</h3>
+<p>Topic models are some of the most well-known algorithms in digital
+humanities. While in computer science and machine learning they are a
+decided old technology, in many areas of the humanities they still feel
+new and cutting edge.</p>
+<p>We will begin the session with a short examination of what topic
+models actually are. Building on the argument that historians, and
+digital humanists in general, should understand how algorithms represent
+and transformation text but not necessarily the means by which the
+algorithms calculate their conclusions <span class="citation">Schmidt
+(2016)</span>, we begin with a high-level overview of what a
+bag-of-words model entails, how this enables document vectorization, and
+finally what a topic model. We will then look at implementation of topic
+models in two widely used R packages.</p>
+</div>
+<div id="download-the-following-for-this-session" class="section level3"
+number="2">
+<h3><span class="header-section-number">2</span> Download the following
+for this session</h3>
+<p><a href="scripts/Day3-vectorization-topic-models.R">Script for this
+session</a>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
+<div id="ref-schmidt2016digital" class="csl-entry">
+Schmidt, Benjamin M. 2016. <span>“Do Digital Humanists Need to
+Understand Algorithms?”</span> <em>Debates in the Digital
+Humanities</em> 2016: 53.
+</div>
+</div>
+</div>
 
 <br><br><p>2025.
 
