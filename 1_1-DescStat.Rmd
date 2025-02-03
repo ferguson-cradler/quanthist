@@ -27,9 +27,9 @@ In the process, we will also learn how to restrict the analysis to particular su
 
 #### Data:
 
-1. [Paisley dataset](paisley_data.xls)
+1. [Paisley dataset](data/paisley_data.xls)
 
-2. [Paisley dataset (v2)](paisley_v2.rds)
+2. [Paisley dataset (v2)](data/paisley_v2.rds)
 
-3. [Education 1860 (Spanish districts)](educ_1860.xlsx)
+3. [Education 1860 (Spanish districts)](data/educ_1860.xlsx)
 
