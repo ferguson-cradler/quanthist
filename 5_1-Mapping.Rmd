@@ -13,3 +13,10 @@ Space constitutes a crucial dimension in our understanding of any historical pro
 
 This session will show how to create quality maps. Drawing maps not only allows explicitly considering spatial dimensions in our analysis, but it is also a powerful way of telling stories and producing compelling arguments. Mapping however is not an end in itself, but it is also a research tool that enables interrogating historical sources in different ways. Exploring spatial patterns usually raises new questions and hypotheses. 
 
+### Download the following for this session:
+
+#### Script: [Mapping](scripts/5_mapping.R)
+
+#### Data: [Shape/Raster files](mapping.zip).
+
+Note that the latter refers to a compressed folder, so you have to unzipped it yourself.
