@@ -3,6 +3,18 @@
 
 ## Session 2.2 - Word frequency, dictionary methods, correlation/collocation analysis
 
+install.packages("quanteda")
+install.packages("tidytext")
+install.packages("stopwords")
+install.packages("SnowballC")
+install.packages("textstem")
+install.packages("wordcloud")
+install.packages("wordcloud2")
+install.packages("entity")
+install.packages("udpipe")
+install.packages("tokenizers")
+
+
 rm(list=ls())
 # setwd() as needed
 
