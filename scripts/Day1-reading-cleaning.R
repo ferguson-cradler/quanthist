@@ -4,25 +4,31 @@
 ## Session 1.2: Collecting, reading and cleaning text data
 
 # setwd() if need be
+rm(list=ls())
 
 #################################
 # Reading in Text Documents     #
 #################################
 
-### Reading in txt, doc or pdf files
+install.packages("readtext")
+install.packages("tesseract")
+
+# install also: tesseract (try...), lubridate
+
+
+### Reading in txt, doc, html, pdf files
 
 # to see list of files in your working directory
-list.files() 
+list.files("data/dickens") 
 
 # list of files in subdirectories of working directory
-(books_list <- list.files(path = "data/dickens", full.names = TRUE))
+books_list <- list.files(path = "data/dickens", full.names = TRUE)
 
 # we now use the package readtext to read in the whole list of documents
 # another similar reader is called pdftools
 library(readtext)
 books <- readtext(books_list)
-class(books)
-
+str(books)
 
 library(tidyverse)
 # extract metadata from the filenames, save as tibble
@@ -32,7 +38,7 @@ books <- readtext(books_list, docvarsfrom="filenames", dvsep = ' - ',
 books
 
 # saving our tibble as a csv
-# write_csv(books, "data/dickens_books.csv")
+#write_csv(books, "data/dickens_books.csv")
 
 ## Reminder: There are R packages for many document databases such as Project Gutenberg 
 ## https://cran.r-project.org/web/packages/gutenbergr/vignettes/intro.html.
@@ -47,8 +53,9 @@ books
 stort_meld<- readtext('data/stmeld8_kongo.pdf')
 # returns a df
 stort_meld
+stort_meld$text[1]
 # print with formatting 
-cat(stort_meld$text)
+cat(stort_meld$text[1])
 # print plain text, first 1000 characters ("substring")
 str_sub(stort_meld$text, 1, 1000) 
 
@@ -79,6 +86,7 @@ extract_areas("data/sustainability-report-2001-equinor.pdf", 44)
 # https://tesseract-ocr.github.io/tessdoc/Data-Files-in-different-versions.html)).
 
 ## Example: 1925 document from Norwegian parliament
+install.packages("pdftools")
 
 # First download and load Norwegian OCR model
 library(tesseract)
@@ -98,13 +106,15 @@ cat(text)
 # Less exciting but important.
 
 nobel <- read_csv("data/NobelPeace.csv", locale=locale(encoding = "UTF-8"))
-oil_sr <- read_csv("data/srps.csv")
-
+#oil_sr <- read_csv("data/srps.csv")
 
 ### Viewing your tibble corpus
 nobel # note that this tells you the datatype of each column
 tail(nobel, n = 10) # and head
 print(nobel, n = Inf)
+
+nobel <- nobel |> 
+  select(Year, Laureate, AwardSpeech)
 glimpse(nobel)
 View(nobel)
 
@@ -194,8 +204,14 @@ nobel |>
 nobel  |> 
   mutate(after_WWII = Year > 1945)
 # do this to create a new column for word count
+
 nobel <- nobel |>
   mutate(wc = str_count(AwardSpeech, '[\\w]+'))
+
+# other way to do this: 
+library(tokenizers)
+nobel |> 
+  mutate(wc = count_words(AwardSpeech))
 
 # inspect this column
 nobel$wc
@@ -217,6 +233,9 @@ nobel |>
 nobel |> 
   filter(wc < 500)
 
+which(nobel$Year == 2020)
+nobel$AwardSpeech[93]
+
 sum(nobel$wc) # total word count
 mean(nobel$wc) # average speech word count
 
@@ -225,6 +244,7 @@ nobel |>
   mutate(decade = (Year %/% 10) * 10) |> # uses something called modulo division to get the decade
   group_by(decade) |>
   summarize(mean(wc))
+
 nobel |>
   mutate(period = case_when(
     Year <= 1945 ~ "Pre-cold war",
@@ -237,7 +257,9 @@ nobel |>
 nobel |>
   mutate(decade = (Year %/% 10) * 10) |>
   group_by(decade) |>
-  summarize(n())
+  # does same as count()
+  #summarize(n())
+  count()
 
 # google n-grams style plots
 nobel |>
@@ -312,8 +334,9 @@ mdy("12/25/2024") # American standard
 dmy("25.12.2024") # lubridate will also recognize various possible separators
 dmy("21st of June in the year of our lord 2024") 
 
-# Sys.setlocale("LC_ALL", "nb_NO.utf8")
-dmy("den 2. februar 2019") # and multilingual, though this will depend on your language locale (Sys.getlocale (category = "LC_ALL"))
+Sys.setlocale("LC_ALL", "nb_NO.utf8")
+dmy("den 2. februar 2019") # and multilingual, though this will depend on your language 
+               # locale (Sys.getlocale (category = "LC_ALL"))
 
 t <- now() 
 year(t)

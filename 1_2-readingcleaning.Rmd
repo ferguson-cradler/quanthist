@@ -19,7 +19,7 @@ The second major goal of this session is to consider how to handle text in R. We
 
 [Script for this session](scripts/Day1-reading-cleaning.R).
 
-Four Charles Dickens novels can be downloaded [here](data/dickens/A Christmas Carol - Charles Dickens - 1843.pdf), [here](data/dickens/David Copperfield - Charles Dickens - 1850.txt), [here](docs/data/dickens/Hard Times - Charles Dickens - 1854.docx), and [here](data/dickens/Oliver Twist - Charles Dickens - 1838.html). Put these in a separate folder within your working drive, preferably with a name that is easy to type.
+Four Charles Dickens novels can be downloaded [here](data/dickens/A Christmas Carol - Charles Dickens - 1843.pdf), [here](data/dickens/David Copperfield - Charles Dickens - 1850.txt), [here](data/dickens/Hard Times - Charles Dickens - 1854.docx), and [here](data/dickens/Oliver Twist - Charles Dickens - 1838.html). Put these in a separate folder within your working drive, preferably with a name that is easy to type.
 
 We will also be working with some examples of historical documents. Download these (probably easiest to save them to your working directory):
 

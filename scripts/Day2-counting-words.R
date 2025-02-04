@@ -6,7 +6,16 @@
 rm(list=ls())
 # setwd() as needed
 
-nobel <- read_rds("data/nobel_cleaned.Rds")
+Sys.setlocale("LC_ALL", "en_US.utf8")
+nobel <- read_csv("data/NobelPeace.csv")
+
+library(tidyverse)
+
+nobel <- nobel |> 
+  mutate(clean_text = str_to_lower(AwardSpeech)) |> 
+  mutate(clean_text = str_squish(clean_text)) |> 
+  select(Year, Laureate, clean_text) |> 
+  rename(Year = Year, Laureate = Laureate, AwardSpeech = clean_text)
 
 ##########################
 # Keywords in context    #
@@ -40,7 +49,7 @@ write_xlsx(peace_kwic, "data/peace_kwic.xlsx")
 
 ### Tokenization
 
-## tidy data principles: 
+## Tidy data principles: 
 # There are three interrelated rules which make a dataset tidy:
 #   - Each variable must have its own column.
 #   - Each observation must have its own row.
@@ -58,10 +67,11 @@ table(stop_words$lexicon)
 # other stopword lists
 library(stopwords)
 stopwords("no")
-stopwords("de")
+stopwords("ru")
+stopwords("zh", source = "stopwords-iso")
 # there are multiple sources for stopwords
 stopwords_getsources()
-stopwords_getlanguages("stopwords-iso")
+stopwords_getlanguages("snowball")
 
 # remove stopwords from nobel corpus
 nobel_tidy <- nobel |> 
@@ -105,12 +115,13 @@ nobel  |>
   mutate(Period = ifelse(Year <= 1945, "Pre-WWII", "Post-WWII"))  |>
   mutate(Period = factor(Period, levels = c("Pre-WWII", "Post-WWII"))) |>
   unnest_tokens(output = words, input = AwardSpeech, stopwords = stop_words$word) |> 
+  mutate(lemma = lemmatize_words(words, dictionary = hash_lemmas)) |> 
   group_by(Period) |>
-  count(words, sort=TRUE) |> 
+  count(lemma, sort=TRUE) |> 
   mutate(proportion = n / sum(n) * 1000) |>                    
   #slice_max(order_by=proportion, n = 15) %>%                    
   top_n(15) |> 
-  ggplot(aes(reorder_within(x = words, by = proportion, within = Period), proportion, fill = Period)) +
+  ggplot(aes(reorder_within(x = lemma, by = proportion, within = Period), proportion, fill = Period)) +
   geom_col() +
   coord_flip() +
   scale_x_reordered() +
@@ -128,7 +139,7 @@ library(wordcloud)
 library(wordcloud2)
 nobel_tidy %>%
   count(words, sort=TRUE) %>%
-  with(wordcloud(words, n, max.words = 100))
+  with(wordcloud(words, n, max.words = 80))
 
 dat <- nobel_tidy %>%
   count(words, sort=TRUE) %>%
@@ -208,13 +219,16 @@ topwords <- nobel |>
   unnest_tokens(output = words, input = AwardSpeech_bigrams) |> 
   anti_join(stop_words, by = c("words" = "word")) |> 
   count(words, sort=TRUE)
+
 print(topwords, n = 20)
 
 #############################
 # Tagging                   #
 #############################
 
-nobel_uncleaned <- read_csv("data/NobelPeace.csv", locale=locale(encoding = "UTF-8"))
+nobel_uncleaned <- read_csv("data/NobelPeace.csv") |> 
+  mutate(AwardSpeech = str_squish(AwardSpeech)) |> 
+  select(Year, Laureate, AwardSpeech)
 
 ### Named entity recognition
 library(entity)
@@ -238,7 +252,7 @@ nobel_locations |>
   facet_wrap(~Period, ncol = 2, scales = "free") +
   labs(x = "Word", y = "Frequency per 1000 words", title = "Location frequencies in the Nobel Peace Prize corpus") +
   theme_bw() +
-  guides(fill=FALSE)
+  guides(fill="none")
 
 # also person and organization entity, though they are far from perfect
 person_entity(nobel_uncleaned$AwardSpeech[4])
@@ -247,8 +261,10 @@ organization_entity(nobel_uncleaned$AwardSpeech[10])
 ### POS tagging
 library(udpipe)
 # need to download a model
-pos_model <- udpipe_download_model("english-gum")
+pos_model <- udpipe_download_model("english-gum") # needs to be done only once
 pos_model <- udpipe_load_model(file = pos_model$file_model)
+
+# as example, show POS for first sentance in the corpus
 library(tokenizers)
 sample_sentence <- tokenize_sentences(nobel_uncleaned$AwardSpeech[1])[[1]][[1]]
 tagged_pos <- udpipe_annotate(pos_model, x = sample_sentence)
@@ -333,3 +349,4 @@ nobel |>
   count(Year, dictionary) |> 
   ggplot() +
   geom_line(aes(x=Year, y=n, color=dictionary))
+
