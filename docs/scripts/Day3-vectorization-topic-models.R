@@ -3,7 +3,10 @@
 
 ## Session 3.2 -- Vectorization and topic modelling
 
-### what is a dtm?
+# setwd() if need by
+
+Sys.setlocale("LC_ALL", "en_US.utf8")
+nobel <- read_rds("data/nobel_cleaned.Rds")
 
 ### Co-occurrence 
 
@@ -15,9 +18,6 @@ nobel |>
   filter(!word %in% stop_words$word) |>
   pairwise_count(word, Year, upper = FALSE, sort = TRUE)
 
-# there are collocation measures in quanteda also but it can be hard to know
-# how to interpret them
-
 cooccur <- nobel |> 
   unnest_tokens(sentences, AwardSpeech, token = "sentences") |>
   mutate(sentences = str_to_lower(sentences)) |>
@@ -27,11 +27,21 @@ cooccur <- nobel |>
   pairwise_count(word, sentence, upper = TRUE, sort = TRUE) |> 
   filter(item1 == "equality" & item2 == "peace")
 
+# there are collocation measures in the quanteda package also but it can be hard to know
+# how to interpret them
+
 #######################
 # Vectorization       #
 #######################
 
+### what is a document term matrix?
+
+### what is a cosine distance?
+
 ####### Cosine distance
+
+library(quanteda)
+library(quanteda.textstats)
 
 # creating a dfm (dtm)
 nobel |> 
@@ -88,17 +98,6 @@ library(quanteda.textplots)
 keyness <- textstat_keyness(nobel_dfm, target = nobel_dfm$decade >= 1945)
 textplot_keyness(keyness)
 
-## network text analysis
-nobel_fcm <- nobel |>
-  corpus(text_field = 'AwardSpeech') |>
-  quanteda::tokens(remove_numbers = TRUE, remove_punc = TRUE) |>
-  tokens_remove(pattern = stop_words$word) |>
-  fcm(context = "window", tri = FALSE, window = 20)
-
-############!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-top <- names(topfeatures(nobel_fcm, 50))
-fcm_select(nobel_fcm, pattern = nobel_fcm) |>
-  textplot_network(min_freq = .95)
 
 #######################
 # Topic models        #
@@ -190,3 +189,5 @@ nobel_periods <- nobel |>
 # setting EM iterations to 10 for speed -- normally this should be many more (often set at 75)
 fit10_period <- stm(nobel_periods, K = 10, content =~Period, prevalence =~ Period, max.em.its = 5, init.type = "Spectral")
 plot(fit10_period)
+
+

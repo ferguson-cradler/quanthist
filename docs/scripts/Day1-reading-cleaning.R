@@ -208,6 +208,11 @@ nobel  |>
 nobel <- nobel |>
   mutate(wc = str_count(AwardSpeech, '[\\w]+'))
 
+# other way to do this: 
+library(tokenizers)
+nobel |> 
+  mutate(wc = count_words(AwardSpeech))
+
 # inspect this column
 nobel$wc
 
@@ -330,7 +335,8 @@ dmy("25.12.2024") # lubridate will also recognize various possible separators
 dmy("21st of June in the year of our lord 2024") 
 
 Sys.setlocale("LC_ALL", "nb_NO.utf8")
-dmy("den 2. februar 2019") # and multilingual, though this will depend on your language locale (Sys.getlocale (category = "LC_ALL"))
+dmy("den 2. februar 2019") # and multilingual, though this will depend on your language 
+               # locale (Sys.getlocale (category = "LC_ALL"))
 
 t <- now() 
 year(t)
