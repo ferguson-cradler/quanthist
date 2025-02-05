@@ -3,12 +3,21 @@
 
 ## Session 3.2 -- Vectorization and topic modelling
 
+# New packages
+install.packages("topicmodels")
+install.packages("widyr")
+install.packages("quanteda.textstats")
+install.packages("quanteda.textplots")
+install.packages("topicmodels")
+install.packages("stm")
+
+rm(list=ls())
 # setwd() if need by
+Sys.setlocale("LC_ALL", "en_US.utf8")
 
 library(tidyverse)
-
-Sys.setlocale("LC_ALL", "en_US.utf8")
 nobel <- read_rds("data/nobel_cleaned.Rds")
+
 
 ### Co-occurrence 
 
@@ -105,6 +114,7 @@ textplot_keyness(keyness)
 # Topic models        #
 #######################
 
+library(SnowballC)
 nobel_stemmed <- nobel |>
   unnest_tokens(output = words, input = AwardSpeech) |>
   anti_join(stop_words, by = c("words" = "word")) |>
@@ -117,6 +127,7 @@ nobel_dtm <- nobel_stemmed |>
   count(word_stem, sort = TRUE) |>
   cast_dtm(Year, word_stem, n)
 
+library(topicmodels)
 k <- 10
 nobel_tm <- LDA(nobel_dtm, k = k, control = list(alpha = .1))
 
