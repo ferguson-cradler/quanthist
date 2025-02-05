@@ -29,6 +29,7 @@ nobel |>
   filter(!word %in% stop_words$word) |>
   pairwise_count(word, Year, upper = FALSE, sort = TRUE)
 
+# co-occurrence within sentences
 cooccur <- nobel |> 
   unnest_tokens(sentences, AwardSpeech, token = "sentences") |>
   mutate(sentences = str_to_lower(sentences)) |>
@@ -37,6 +38,7 @@ cooccur <- nobel |>
   filter(!word %in% stop_words$word)  |> 
   pairwise_count(word, sentence, upper = TRUE, sort = TRUE) |> 
   filter(item1 == "equality" & item2 == "peace")
+cooccur
 
 # there are collocation measures in the quanteda package also but it can be hard to know
 # how to interpret them
@@ -130,7 +132,6 @@ nobel_dtm <- nobel_stemmed |>
 library(topicmodels)
 k <- 10
 nobel_tm <- LDA(nobel_dtm, k = k, control = list(alpha = .1))
-
 terms(nobel_tm, 15)
 
 # go back to tidy to look at this -- beta distribution
@@ -154,18 +155,21 @@ topics_in_documents <- tidy(nobel_tm, matrix = "gamma")
 (topics <- topics_in_documents |>
     left_join(auto_topics, by=c("topic" = "old_topic")))
 
+# topic prevalence in select documents
 topics |>
-  filter(document %in% c(1977, 1985, 1996)) |>  # the documents we want to compare
+  filter(document %in% c(1995, 1997, 1998)) |>  # the documents we want to compare
   ggplot(aes(new_topic, gamma, fill = document)) +
   geom_col() +
   coord_flip() +
   facet_wrap(~ document, ncol = 3)
 
+# topic prevalence of all documents
 topics |>
   ggplot(aes(document, gamma)) +
   geom_col(aes(group = new_topic, fill = new_topic)) +
   scale_x_discrete(breaks = seq(1905, 2019, 10))
 
+# topic prevalence by year
 topics |>
   #filter(str_detect(new_topic, "war")) |>
   ggplot(aes(document, gamma)) +
@@ -186,6 +190,7 @@ nobel_decade <- nobel_corp |>
   dfm() |>
   dfm_remove(pattern = stop_words$word) 
   #dfm_group(groups = decade)
+
 # max.em.its only 5 for demo purposes, generally more like 70-80
 fit10 <- stm(nobel_decade, K = 10, max.em.its = 5, init.type = "Spectral")
 
@@ -202,7 +207,9 @@ nobel_periods <- nobel |>
   dfm_remove(pattern = stop_words$word)
 # setting EM iterations to 10 for speed -- normally this should be many more (often set at 75)
 fit10_period <- stm(nobel_periods, K = 10, content =~Period, prevalence =~ Period, max.em.its = 5, init.type = "Spectral")
+
 plot(fit10_period)
+plot(fit10_period, type = "perspectives", topics = 2)
 
 ## we can also let stm choose a k for use
 fit10 <- stm(nobel_decade, K = 0, max.em.its = 5, init.type = "Spectral")
@@ -210,19 +217,20 @@ fit10 <- stm(nobel_decade, K = 0, max.em.its = 5, init.type = "Spectral")
 ## Example - oil croporatation sustainability reports
 # example using stms functions for document preperation.
 
-oil_sr <- read_csv("data/srps.csv")
+oil_sr <- read_csv("data/srps.csv") |> 
+  mutate(Text = str_squish(Text))
 oil_sr
 table(oil_sr$Year, oil_sr$Company)
 
+# format oil_sr to put into stm
 oil_sr |> 
   unnest_tokens(output = words, input = Text)
-
 oil_dfm <- oil_sr |> 
   corpus(text_field = 'Text') |>
   quanteda::tokens(remove_numbers = TRUE, remove_punc = TRUE) |>
   dfm() |>
   dfm_remove(pattern = stop_words$word)
-oil_tm_20 <- stm(oil_dfm, K=30, max.em.its = 10, init.type = "Spectral")
+#oil_tm_20 <- stm(oil_dfm, K=30, max.em.its = 10, init.type = "Spectral")
 
 labelTopics(oil_tm_20)
 
@@ -232,26 +240,22 @@ output <- prepDocuments(oil_processed$documents, oil_processed$vocab, oil_proces
 docs <- output$documents
 vocab <- output$vocab
 meta <- output$meta
+#oil_topmod <- stm(docs, vocab, data = meta, K=20, max.em.its = 10, init.type = "Spectral")
 
-oil_topmod <- stm(docs, vocab, data = meta, K=20, max.em.its = 10, init.type = "Spectral")
-
-labelTopics(oil_tm_20)
-prep <- estimateEffect(1:20 ~ Year + Company, oil_tm_20,
-            meta = output$meta, uncertainty = "Global")
-summary(prep, topics = 4)
-
-plot(prep, "year", method = "continuous", topics = 2,
-     model = oil_tm_20, printlegend = FALSE, xaxt = "n", xlab = "Time")
+labelTopics(oil_topmod)
 
 # topical content -- allows content of topic to vary by covariates
 
-oil_tm <- stm(output$documents, output$vocab, K = 20,
-                       prevalence =~ Year + Company, content =~ Company,
-                       max.em.its = 5, data = output$meta, init.type = "Spectral")
+#oil_tm <- stm(output$documents, output$vocab, K = 20,
+#                       prevalence =~ Year + Company, content =~ Company,
+#                       max.em.its = 75, data = output$meta, init.type = "Spectral")
 
-# 
+labelTopics(oil_tm)
 plot(oil_tm, type = "perspectives", topics = 10)
 # compare across two topics
 plot(oil_tm, type = "perspectives", topics = c(16, 18))
 
 topicCorr(oil_tm)
+#prep <- estimateEffect(1:20 ~ Year + Company, oil_tm,
+#            meta = output$meta)#, uncertainty = "Global")
+summary(prep, topics = 4)

@@ -217,7 +217,8 @@ fit10 <- stm(nobel_decade, K = 0, max.em.its = 5, init.type = "Spectral")
 ## Example - oil croporatation sustainability reports
 # example using stms functions for document preperation.
 
-oil_sr <- read_csv("data/srps.csv")
+oil_sr <- read_csv("data/srps.csv") |> 
+  mutate(Text = str_squish(Text))
 oil_sr
 table(oil_sr$Year, oil_sr$Company)
 
@@ -229,7 +230,7 @@ oil_dfm <- oil_sr |>
   quanteda::tokens(remove_numbers = TRUE, remove_punc = TRUE) |>
   dfm() |>
   dfm_remove(pattern = stop_words$word)
-oil_tm_20 <- stm(oil_dfm, K=30, max.em.its = 10, init.type = "Spectral")
+#oil_tm_20 <- stm(oil_dfm, K=30, max.em.its = 10, init.type = "Spectral")
 
 labelTopics(oil_tm_20)
 
@@ -239,23 +240,22 @@ output <- prepDocuments(oil_processed$documents, oil_processed$vocab, oil_proces
 docs <- output$documents
 vocab <- output$vocab
 meta <- output$meta
-oil_topmod <- stm(docs, vocab, data = meta, K=20, max.em.its = 10, init.type = "Spectral")
+#oil_topmod <- stm(docs, vocab, data = meta, K=20, max.em.its = 10, init.type = "Spectral")
 
 labelTopics(oil_topmod)
 
 # topical content -- allows content of topic to vary by covariates
 
-oil_tm <- stm(output$documents, output$vocab, K = 20,
-                       prevalence =~ Year + Company, content =~ Company,
-                       max.em.its = 75, data = output$meta, init.type = "Spectral")
+#oil_tm <- stm(output$documents, output$vocab, K = 20,
+#                       prevalence =~ Year + Company, content =~ Company,
+#                       max.em.its = 75, data = output$meta, init.type = "Spectral")
 
+labelTopics(oil_tm)
 plot(oil_tm, type = "perspectives", topics = 10)
 # compare across two topics
 plot(oil_tm, type = "perspectives", topics = c(16, 18))
 
 topicCorr(oil_tm)
-# prep <- estimateEffect(1:20 ~ Year + Company, oil_tm,
-            meta = output$meta)#, uncertainty = "Global")
+#prep <- estimateEffect(1:20 ~ Year + Company, oil_tm,
+#            meta = output$meta)#, uncertainty = "Global")
 summary(prep, topics = 4)
-plot(prep, "year", method = "continuous", topics = 2,
-     model = oil_tm_20, printlegend = FALSE, xaxt = "n", xlab = "Time")
