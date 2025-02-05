@@ -15,6 +15,8 @@ Topic models are some of the most well-known algorithms in digital humanities. W
 
 We will begin the session with a short examination of what topic models actually are. Building on the argument that historians, and digital humanists in general, should understand how algorithms represent and transformation text but not necessarily the means by which the algorithms calculate their conclusions @schmidt2016digital, we begin with a high-level overview of what a bag-of-words model entails, how this enables document vectorization, and finally what a topic model. We will then look at implementation of topic models in two widely used R packages.
 
+The presentation on topic models can be downloaded [here](data/Topic_model_pres.pdf). 
+
 ### Download the following for this session
 
 [Script for this session](scripts/Day3-vectorization-topic-models.R).

@@ -3,16 +3,16 @@
 
 ## Session 2.2 - Word frequency, dictionary methods, correlation/collocation analysis
 
-install.packages("quanteda")
-install.packages("tidytext")
-install.packages("stopwords")
-install.packages("SnowballC")
-install.packages("textstem")
-install.packages("wordcloud")
-install.packages("wordcloud2")
-install.packages("entity")
-install.packages("udpipe")
-install.packages("tokenizers")
+# install.packages("quanteda")
+# install.packages("tidytext")
+# install.packages("stopwords")
+# install.packages("SnowballC")
+# install.packages("textstem")
+# install.packages("wordcloud")
+# install.packages("wordcloud2")
+# install.packages("entity")
+# install.packages("udpipe")
+# install.packages("tokenizers")
 
 
 rm(list=ls())
@@ -69,8 +69,11 @@ write_xlsx(peace_kwic, "data/peace_kwic.xlsx")
 
 # if we are counting words then each word is an observation
 library(tidytext)
+
 nobel |> 
-  unnest_tokens(output = words, input = AwardSpeech)
+  unnest_tokens(output = words, input = AwardSpeech) |> 
+  count(words) |> 
+  arrange(desc(n))
 
 ### Stopwords
 
@@ -78,17 +81,19 @@ stop_words # english stopwords from tidytext
 table(stop_words$lexicon)
 # other stopword lists
 library(stopwords)
-stopwords("no")
+stopwords("de")
 stopwords("ru")
 stopwords("zh", source = "stopwords-iso")
 # there are multiple sources for stopwords
 stopwords_getsources()
-stopwords_getlanguages("snowball")
+stopwords_getlanguages("ancient")
+stopwords("grc", source = "ancient")
 
 # remove stopwords from nobel corpus
-nobel_tidy <- nobel |> 
+nobel_stop <- nobel |> 
   unnest_tokens(output = words, input = AwardSpeech) |> 
   anti_join(stop_words, by = c("words" = "word"))  # by= specifies which columns to use, had they been named the same thing we could have omitted it
+
 # adding our own words to the stopword list
 my_words <- c("peace", "war")
 custom_stop_words <- tibble(word = my_words, lexicon = "my_customization")
@@ -110,23 +115,23 @@ SnowballC::wordStem(words_to_stem)
 # lemmatizing
 library(textstem)
 data("hash_lemmas", package = "lexicon")
-lemmatize_words(words_to_stem,dictionary = hash_lemmas) # lemmatize_strings also exists
+lemmatize_words(words_to_stem, dictionary = hash_lemmas) # lemmatize_strings also exists
 
 ##########################
 # Word frequency charts  #
 ##########################
 
 # quick and dirty word count
-nobel_tidy |> 
+nobel_stop |> 
   count(words, sort=TRUE)
 
 # lets now apply all we've learned and then some and make two side by side 
 #    charts of top word frequency
 
-nobel  |> 
+nobel_stop  |> 
   mutate(Period = ifelse(Year <= 1945, "Pre-WWII", "Post-WWII"))  |>
   mutate(Period = factor(Period, levels = c("Pre-WWII", "Post-WWII"))) |>
-  unnest_tokens(output = words, input = AwardSpeech, stopwords = stop_words$word) |> 
+  #unnest_tokens(output = words, input = AwardSpeech, stopwords = stop_words$word) |> 
   mutate(lemma = lemmatize_words(words, dictionary = hash_lemmas)) |> 
   group_by(Period) |>
   count(lemma, sort=TRUE) |> 
@@ -191,10 +196,9 @@ nobel  |>
   slice_max(tf_idf, n = 15)  |> 
   ungroup() |> 
   ggplot(aes(tf_idf, fct_reorder(words, tf_idf), fill = Period)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~Period, ncol = 2, scales = "free") +
-  labs(x = "tf-idf", y = NULL)
-
+    geom_col(show.legend = FALSE) +
+    facet_wrap(~Period, ncol = 2, scales = "free") +
+    labs(x = "tf-idf", y = NULL)
 
 #########################
 # n-grams in the corpus #
@@ -280,7 +284,7 @@ pos_model <- udpipe_load_model(file = pos_model$file_model)
 library(tokenizers)
 sample_sentence <- tokenize_sentences(nobel_uncleaned$AwardSpeech[1])[[1]][[1]]
 tagged_pos <- udpipe_annotate(pos_model, x = sample_sentence)
-as.data.frame(tagged_pos, detailed=TRUE)
+pos_list <- as_tibble(tagged_pos, detailed=TRUE)
 
 # count most frequent nouns
 nobel_pos <- udpipe_annotate(pos_model, x = nobel$AwardSpeech, doc_id = nobel$Year) # this will take a while
@@ -293,8 +297,8 @@ nobel_pos_df |>
   top_n(15) |>                 
   mutate(lemma = reorder(lemma,n)) |>  
   ggplot(aes(lemma, n)) + 
-  geom_col() + 
-  coord_flip()
+    geom_col() + 
+    coord_flip()
 
 # other possibilities - plot noun, verb and adj frequency over time
 nobel_pos_df |> 
@@ -304,17 +308,20 @@ nobel_pos_df |>
   mutate(nouns = nouns/word_count, verbs = verbs/word_count, adj = adj/word_count) |> 
   select(!word_count) |> 
   pivot_longer(!Year, names_to = "POS", values_to = "Count") |> 
-  ggplot() +
-    geom_line(aes(x=Year, y=Count, group = POS, color = POS)) +
+  ggplot(aes(x=Year, y=Count, group = POS, color = POS)) +
+    geom_line() +
+    geom_smooth(se = FALSE) +
     scale_y_continuous(labels = scales::label_percent()) +
-  scale_x_continuous(breaks = seq(1905,2025,10))
+    scale_x_continuous(breaks = seq(1905,2025,10))
 
 ################################
 # Sentiment analysis           #
 ################################
+#install.packages("textdata")
 
 # dictionaries with tidytext
-get_sentiments("afinn") # other dictionaries are "bing" and "nrc"
+get_sentiments("bing") # other dictionaries are "bing" and "nrc"
+
 table(get_sentiments("afinn")$value)
 summary(get_sentiments("afinn")$value)
 
@@ -347,6 +354,8 @@ nobel %>%
 # what is a dictionary?
 
 war_dict <- read_lines("data/war.txt")
+#war_dict <- c("war", "conflict", "hositiliets")
+
 war_dict <- tibble(word = war_dict, dictionary = "war")
 war_dict <- war_dict |> 
   filter(word != "")
@@ -359,6 +368,7 @@ nobel |>
   unnest_tokens(output = words, input = AwardSpeech) |> 
   inner_join(dict, by=c("words"="word")) |> 
   count(Year, dictionary) |> 
-  ggplot() +
-  geom_line(aes(x=Year, y=n, color=dictionary))
+  ggplot(aes(x=Year, y=n, color=dictionary)) +
+    geom_line() +
+    geom_smooth(se = FALSE)
 

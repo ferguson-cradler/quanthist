@@ -3,11 +3,15 @@
 
 ## Session 4.2 -- Word embedding
 
+install.packages("word2vec")
+
+
 library(tidyverse)
 library(quanteda)
 library(quanteda.textstats)
 library(quanteda.textplots)
 library(tidytext)
+library(word2vec)
 
 # setwd() if necessary
 nobel <- read_rds("nobel_cleaned.Rds")
@@ -18,10 +22,7 @@ nobel <- read_rds("nobel_cleaned.Rds")
 
 ## Word2Vec
 
-# install.packages("devtools")
-# devtools::install_github("bmschmidt/wordVectors")
-library(wordVectors)
-library(magrittr)
+
 
 write_lines(nobel$AwardSpeech, "nobel.txt")
 prep_word2vec(origin="nobel.txt",destination="nobel_prep.txt",lowercase=TRUE,bundle_ngrams=2)

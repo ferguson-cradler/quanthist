@@ -5,6 +5,8 @@
 
 # setwd() if need by
 
+library(tidyverse)
+
 Sys.setlocale("LC_ALL", "en_US.utf8")
 nobel <- read_rds("data/nobel_cleaned.Rds")
 
@@ -116,8 +118,7 @@ nobel_dtm <- nobel_stemmed |>
   cast_dtm(Year, word_stem, n)
 
 k <- 10
-alpha <- .1
-nobel_tm <- LDA(nobel_dtm, k = k, control = list(alpha = alpha))
+nobel_tm <- LDA(nobel_dtm, k = k, control = list(alpha = .1))
 
 terms(nobel_tm, 15)
 
@@ -165,19 +166,21 @@ topics |>
 #### Structural topic model
 
 library(stm)
-nobel_decade <- nobel |>
+nobel_corp <- nobel |>
   mutate(decade = Year %/% 10 * 10) |>
   mutate(Period = ifelse(Year <= 1945, "Pre-WWII", "Post-WWII")) |>
-  corpus(text_field = 'AwardSpeech') |>
+  corpus(text_field = 'AwardSpeech')
+nobel_decade <- nobel_corp |> 
   quanteda::tokens(remove_numbers = TRUE, remove_punc = TRUE) |>
   dfm() |>
-  dfm_remove(pattern = stop_words$word) |>
-  dfm_group(groups = decade)
+  dfm_remove(pattern = stop_words$word) 
+  #dfm_group(groups = decade)
+# max.em.its only 5 for demo purposes, generally more like 70-80
 fit10 <- stm(nobel_decade, K = 10, max.em.its = 5, init.type = "Spectral")
+
+labelTopics(fit10)
 plot(fit10)
-
-                ############# Show more ways to visualize stm ##########
-
+findThoughts(fit10, n = 2, texts = nobel_corp, topics = 8)
 
 nobel_periods <- nobel |>
   #mutate(decade = Year %/% 10 * 10) |>
@@ -190,4 +193,54 @@ nobel_periods <- nobel |>
 fit10_period <- stm(nobel_periods, K = 10, content =~Period, prevalence =~ Period, max.em.its = 5, init.type = "Spectral")
 plot(fit10_period)
 
+## we can also let stm choose a k for use
+fit10 <- stm(nobel_decade, K = 0, max.em.its = 5, init.type = "Spectral")
 
+## Example - oil croporatation sustainability reports
+# example using stms functions for document preperation.
+
+oil_sr <- read_csv("data/srps.csv")
+oil_sr
+table(oil_sr$Year, oil_sr$Company)
+
+oil_sr |> 
+  unnest_tokens(output = words, input = Text)
+
+oil_dfm <- oil_sr |> 
+  corpus(text_field = 'Text') |>
+  quanteda::tokens(remove_numbers = TRUE, remove_punc = TRUE) |>
+  dfm() |>
+  dfm_remove(pattern = stop_words$word)
+oil_tm_20 <- stm(oil_dfm, K=30, max.em.its = 10, init.type = "Spectral")
+
+labelTopics(oil_tm_20)
+
+# using stms preprocessing functions
+oil_processed <- textProcessor(oil_sr$Text, metadata = oil_sr)
+output <- prepDocuments(oil_processed$documents, oil_processed$vocab, oil_processed$meta)
+docs <- output$documents
+vocab <- output$vocab
+meta <- output$meta
+
+oil_topmod <- stm(docs, vocab, data = meta, K=20, max.em.its = 10, init.type = "Spectral")
+
+labelTopics(oil_tm_20)
+prep <- estimateEffect(1:20 ~ Year + Company, oil_tm_20,
+            meta = output$meta, uncertainty = "Global")
+summary(prep, topics = 4)
+
+plot(prep, "year", method = "continuous", topics = 2,
+     model = oil_tm_20, printlegend = FALSE, xaxt = "n", xlab = "Time")
+
+# topical content -- allows content of topic to vary by covariates
+
+oil_tm <- stm(output$documents, output$vocab, K = 20,
+                       prevalence =~ Year + Company, content =~ Company,
+                       max.em.its = 5, data = output$meta, init.type = "Spectral")
+
+# 
+plot(oil_tm, type = "perspectives", topics = 10)
+# compare across two topics
+plot(oil_tm, type = "perspectives", topics = c(16, 18))
+
+topicCorr(oil_tm)

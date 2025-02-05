@@ -270,7 +270,8 @@ nobel |>
   #summarize(peace = sum(peace), war = sum(war), human_rights = sum(humright)) |>
   pivot_longer(c("peace", "war", "human_rights"), names_to = "word", values_to = "counts") |>
   ggplot(aes(x = Year, y = counts, color = word)) +
-    geom_line()
+    geom_line() +
+    geom_smooth(se = FALSE)
 
 # as a proportion of total words
 nobel |>
