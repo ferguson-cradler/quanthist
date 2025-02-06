@@ -17,6 +17,4 @@ In the practical part of the session we look at how to train embedding models on
 
 ### Download the following for this session
 
-<!-- [Script for this session](scripts/Day4-word-embedding.R). -->
-
-Coming soon.
+[Script for this session](scripts/Day4-word-embedding.R).

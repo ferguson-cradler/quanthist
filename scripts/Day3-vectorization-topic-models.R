@@ -8,7 +8,6 @@ install.packages("topicmodels")
 install.packages("widyr")
 install.packages("quanteda.textstats")
 install.packages("quanteda.textplots")
-install.packages("topicmodels")
 install.packages("stm")
 
 rm(list=ls())
@@ -16,12 +15,12 @@ rm(list=ls())
 Sys.setlocale("LC_ALL", "en_US.utf8")
 
 library(tidyverse)
-nobel <- read_rds("data/nobel_cleaned.Rds")
-
+nobel <- read_csv("data/NobelPeace.csv")
 
 ### Co-occurrence 
 
 library(widyr)
+library(tidytext)
 
 # co-occurrence within speeches
 nobel |>
@@ -75,6 +74,10 @@ nobel_dfm <- nobel_decade |>
 
 cosine_diff <- textstat_simil(nobel_dfm, method = "cosine")
 
+nobel_wrong <- nobel |> 
+  mutate(Year = as.character(Year))
+nobel_wrong |> mutate(Year = as.numeric(Year))
+
 ## Heat map
 tab <- as_tibble(as.matrix(cosine_diff))
 tab['Decade'] <- nobel_dfm@Dimnames$docs
@@ -94,6 +97,8 @@ tot_gath |>
         panel.grid.major=element_line(color='#eeeeee')) +
   #scale_y_discrete(position = "right") +
   labs(x = '', y = '', title = 'Cosine Distances', subtitle = 'Similarity of responses by rating of EVs')
+
+
 
 # editing the dfm
 dfm_small <- dfm_trim(nobel_dfm, min_termfreq = 3, min_docfreq = 2)
@@ -130,7 +135,7 @@ nobel_dtm <- nobel_stemmed |>
   cast_dtm(Year, word_stem, n)
 
 library(topicmodels)
-k <- 10
+k <- 7
 nobel_tm <- LDA(nobel_dtm, k = k, control = list(alpha = .1))
 terms(nobel_tm, 15)
 
@@ -144,13 +149,15 @@ words_in_topics <- terms |>
 words_in_topics |>
   mutate(term = reorder_within(term, beta, topic)) |>
   ggplot(aes(beta, term, fill = factor(topic))) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~ topic, scales = "free") +
-  scale_y_reordered()
+    geom_col(show.legend = FALSE) +
+    facet_wrap(~ topic, scales = "free") +
+    scale_y_reordered()
 
 ## -- theta dist
 topics_in_documents <- tidy(nobel_tm, matrix = "gamma")
 (auto_topics <- apply(terms(nobel_tm, 3), 2, paste, collapse = "-"))
+#auto_topics <- topics_in_documents |> 
+#  mutate(gamma = num(gamma, digits = 2))
 (auto_topics <- tibble(old_topic = 1:k, new_topic = auto_topics))
 (topics <- topics_in_documents |>
     left_join(auto_topics, by=c("topic" = "old_topic")))
@@ -159,9 +166,9 @@ topics_in_documents <- tidy(nobel_tm, matrix = "gamma")
 topics |>
   filter(document %in% c(1995, 1997, 1998)) |>  # the documents we want to compare
   ggplot(aes(new_topic, gamma, fill = document)) +
-  geom_col() +
-  coord_flip() +
-  facet_wrap(~ document, ncol = 3)
+    geom_col() +
+    coord_flip() +
+    facet_wrap(~ document, ncol = 3)
 
 # topic prevalence of all documents
 topics |>
@@ -173,14 +180,15 @@ topics |>
 topics |>
   #filter(str_detect(new_topic, "war")) |>
   ggplot(aes(document, gamma)) +
-  geom_line(aes(group = new_topic, color = new_topic)) +
-  #geom_line(aes(group = new_topic, color = new_topic)) +
-  scale_x_discrete(breaks = seq(1905, 2019, 10)) +
-  facet_wrap(~new_topic)
+    geom_line(aes(group = new_topic, color = new_topic)) +
+    #geom_line(aes(group = new_topic, color = new_topic)) +
+    scale_x_discrete(breaks = seq(1905, 2019, 10)) +
+    facet_wrap(~new_topic)
 
 #### Structural topic model
 
 library(stm)
+
 nobel_corp <- nobel |>
   mutate(decade = Year %/% 10 * 10) |>
   mutate(Period = ifelse(Year <= 1945, "Pre-WWII", "Post-WWII")) |>
@@ -205,13 +213,15 @@ nobel_periods <- nobel |>
   quanteda::tokens(remove_numbers = TRUE, remove_punc = TRUE) |>
   dfm() |>
   dfm_remove(pattern = stop_words$word)
+
 # setting EM iterations to 10 for speed -- normally this should be many more (often set at 75)
 fit10_period <- stm(nobel_periods, K = 10, content =~Period, prevalence =~ Period, max.em.its = 5, init.type = "Spectral")
 
 plot(fit10_period)
 plot(fit10_period, type = "perspectives", topics = 2)
 
-## we can also let stm choose a k for use
+
+##### Aside: we can also let stm choose a k for use
 fit10 <- stm(nobel_decade, K = 0, max.em.its = 5, init.type = "Spectral")
 
 ## Example - oil croporatation sustainability reports
