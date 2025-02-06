@@ -4,7 +4,8 @@
 ## Session 4.2 -- Word embedding
 
 install.packages("word2vec")
-# wordvectors
+
+## the below are needed to run wordvectors
 # install Rtools
 install.packages("devtools")
 devtools::install_github("bmschmidt/wordVectors")
@@ -37,11 +38,13 @@ nobel <- read_csv("data/NobelPeace.csv") |>
 
 library(word2vec)
 
+text <- nobel$AwardSpeech
+
 set.seed(11111)
 embed <- word2vec(x = text, type = "cbow", dim = 50, iter = 10)
 as.matrix(embed)
 predict(embed, c("rights", "law"), type = "embedding")
-predict(embed, c("right", "law"), type = "nearest", top_n = 5)
+predict(embed, c("rights", "law"), type = "nearest", top_n = 5)
 
 people <- predict(embed, newdata = c("king", "man", "woman"), type = "embedding")
 queen <- people["king", ] - people["man", ] + people["woman", ]
@@ -55,7 +58,7 @@ ans <- p[analogy[1], ] - p[analogy[2], ] + p[analogy[3], ]
 predict(embed, newdata = ans, type = "nearest", top_n = 3)
 
 axis <- c("peace", "war")
-axis <- c("right", "violation")
+#axis <- c("right", "violation")
 embed_axis <- predict(embed, axis[1], type = "embedding") - predict(embed, axis[2], type = "embedding")
 rownames(embed_axis) <- paste(axis[1], "-", axis[2])
 predict(embed, embed_axis, type = "nearest", top_n = 5)
@@ -72,13 +75,13 @@ year_embed <- nobel |>
   doc2vec(embed, newdata = _)
 predict(embed, year_embed[1,], type = "nearest", top_n = 5)
 # find vector by year?
-year_embed[rownames(year_embed) == "1945",]
+year_embed[rownames(year_embed) == "2024",]
 predict(embed, year_embed[rownames(year_embed) == "2024",], type = "nearest", top_n = 5)
 # compare documents to axes
-word2vec_similarity(embed_axis, year_embed[rownames(year_embed) == "1970",], type="cosine")
+word2vec_similarity(embed_axis, year_embed[rownames(year_embed) == "2024",], type="cosine")
 
 
-## Word2Vec
+## Wordvectors
 library(wordVectors)
 
 write_lines(nobel$AwardSpeech, "nobel.txt")
@@ -120,6 +123,7 @@ politics %>%
 
 peacewords <- model %>% closest_to("peace", n = 50)
 peace <- model[[peacewords$word,average=FALSE]]
+
 # PCA dimension reduction
 plot(peace,method="pca")
 # tsne dimension reduction
