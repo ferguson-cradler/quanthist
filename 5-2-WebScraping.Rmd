@@ -17,8 +17,9 @@ An increasingly large amount of historical primary sources are available online.
 
 [Script for this session](scripts/Day5-web-scraping.R).
 
-Sample website example.
-```{html}
+Sample website [here](data/test.html).
+
+```html
 <html>
 <head>
   <title>Sample title</title>
